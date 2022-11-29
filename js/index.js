@@ -12,7 +12,7 @@ const image = new Image()
 image.src = './assets/images/townOne.png'
 
 image.onload = () => {
-    c.drawImage(image, 0, 0)
+    c.drawImage(image, -750, -550)
 }
 
 
