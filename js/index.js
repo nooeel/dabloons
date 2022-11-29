@@ -14,7 +14,14 @@ bgImg.src = './assets/images/townOne.png'
 const playerImg = new Image();
 playerImg.src = './assets/images/playerDown.png'
 
-playerImg.onload = () => {
+
+function loop() {
+    window.requestAnimationFrame(loop)
+    render()
+}
+loop();
+
+function render() {
     c.drawImage(
         bgImg, 
         -740, 
