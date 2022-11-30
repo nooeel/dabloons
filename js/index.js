@@ -3,6 +3,9 @@
 const canvas = document.querySelector('canvas')
 const c = canvas.getContext('2d')  //context
 
+
+console.log(collisions)
+
 canvas.width = 1024
 canvas.height = 576
 
@@ -11,10 +14,10 @@ c.fillStyle = 'white'
 c.fillRect(0, 0, canvas.width, canvas.height)
 
 const townImage = new Image()
-townImage.src = './assets/images/townOne.png'
+townImage.src = 'assets/Images/townOne.png'
 
 const playerImage = new Image();
-playerImage.src = './assets/images/playerDown.png'
+playerImage.src = 'assets/Images/playerDown.png'
 
 
 
