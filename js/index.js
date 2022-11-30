@@ -89,40 +89,37 @@ function render() {
 
 
 function gameLogic() {
-    if (keys.w.pressed) {
-        townImg.position.y += 20
-    }
-    if (keys.a.pressed) {
-        townImg.position.x += 20
-    }
-    if (keys.s.pressed) {
-        townImg.position.y -= 20
-    }
-    if (keys.d.pressed) {
-        townImg.position.x -= 20
-    }
+         if (keys.w.pressed && lastKey === 'w') townImg.position.y += 5
+    else if (keys.a.pressed && lastKey === 'a') townImg.position.x += 5
+    else if (keys.s.pressed && lastKey === 's') townImg.position.y -= 5
+    else if (keys.d.pressed && lastKey === 'd') townImg.position.x -= 5
 }
 
 
 
 // event listener
 
+let lastKey
 window.addEventListener('keydown', (e) => {
     switch (e.key) {
         case 'w' :
             keys.w.pressed = true
+            lastKey = 'w'
             break
         
         case 'a' :
             keys.a.pressed = true
+            lastKey = 'a'
             break
         
         case 's' :
             keys.s.pressed = true
+            lastKey = 's'
             break
         
         case 'd' :
             keys.d.pressed = true
+            lastKey = 'd'
             break
     }
 })
