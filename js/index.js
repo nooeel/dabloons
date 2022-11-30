@@ -9,9 +9,47 @@ console.log(collisions)
 canvas.width = 1024
 canvas.height = 576
 
-c.fillStyle = 'white'
+const collisionsMap = []
 
-c.fillRect(0, 0, canvas.width, canvas.height)
+for (let i = 0; i < collisions.length; i+= 70) {
+    collisionsMap.push(collisions.slice(i, 70 + i))
+}
+
+console.log(collisionsMap);
+
+
+
+class Boundary {
+    constructor({position}) {
+        this.position = position
+        this.height = 48
+        this.width = 48
+    }
+
+    draw() {
+        c.fillStyle = 'red'
+        c.fillRect(this.position.x, this.position.y, this.width, this.width)
+    }
+}
+
+const boundaries = []
+
+collisionsMap.forEach((row, i) => {
+    row.forEach((symbol, j) => {
+        boundaries.push(
+            new Boundary({
+                position: {
+                    x: j * 48,  
+                    y: i * 48
+                }
+            })
+        )
+    })
+})
+
+
+
+
 
 const townImage = new Image()
 townImage.src = 'assets/Images/townOne.png'
@@ -31,6 +69,8 @@ class Sprite {
         c.drawImage(this.image, this.position.x, this.position.y)
     }
 }
+
+
 
 
 const townImg = new Sprite({
