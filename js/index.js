@@ -3,11 +3,17 @@
 const canvas = document.querySelector('canvas')
 const c = canvas.getContext('2d')  //context
 
+const development = false
 
-console.log(collisions)
+
 
 canvas.width = 1024
 canvas.height = 576
+
+const offset = {
+    x: -740,
+    y: -600
+}
 
 const collisionsMap = []
 
@@ -15,11 +21,12 @@ for (let i = 0; i < collisions.length; i+= 70) {
     collisionsMap.push(collisions.slice(i, 70 + i))
 }
 
-console.log(collisionsMap);
 
 
 
 class Boundary {
+    static width = 48
+    static height = 48
     constructor({position}) {
         this.position = position
         this.height = 48
@@ -36,14 +43,17 @@ const boundaries = []
 
 collisionsMap.forEach((row, i) => {
     row.forEach((symbol, j) => {
-        boundaries.push(
-            new Boundary({
-                position: {
-                    x: j * 48,  
-                    y: i * 48
-                }
-            })
-        )
+        if (symbol === 1025) {
+            console.log("h");
+            boundaries.push(
+                new Boundary({
+                    position: {
+                        x: j * Boundary.width + offset.x,  
+                        y: i * Boundary.height + offset.y
+                    }
+                })
+            )
+        }
     })
 })
 
@@ -73,10 +83,13 @@ class Sprite {
 
 
 
+
+
+
 const townImg = new Sprite({
     position: {
-        x: -740,
-        y: -600
+        x: offset.x,
+        y: offset.y
     },
     image: townImage
 })
@@ -110,12 +123,22 @@ loop();
 
 
 
+const testBoundary = new Boundary({
+    position: {
+        x: 400,
+        y: 400
+    }
+})
 
 
 function render() {
     
     townImg.draw()
 
+    if (development === true) {
+        showBoundary()
+    }
+    
     c.drawImage(
         playerImage, 
         0,
@@ -127,6 +150,18 @@ function render() {
         playerImage.width / 4,
         playerImage.height
     )
+}
+
+
+function showBoundary() {
+
+    
+    
+    boundaries.forEach(boundary => {
+        boundary.draw()
+    })
+    
+    
 }
 
 
