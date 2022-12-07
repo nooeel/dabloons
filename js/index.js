@@ -119,10 +119,10 @@ const movables = [townOneBg, fgTownOne, ...boundaries]
 
 function rectengularCollision({rectangle1, rectangle2}) {
     return( 
-        rectangle1.position.x + rectangle1.width  >= rectangle2.position.x                      &&
-        rectangle1.position.x                     <= rectangle2.position.x + rectangle2.width   &&
-        rectangle1.position.y + rectangle1.height >= rectangle2.position.y                      &&    
-        rectangle1.position.y                     <= rectangle2.position.y + rectangle2.height
+        rectangle1.position.x + rectangle1.width * rectangle1.size  >= rectangle2.position.x + 5                        &&
+        rectangle1.position.x                                       <= rectangle2.position.x + rectangle2.width - 5     &&
+        rectangle1.position.y + rectangle1.height * rectangle1.size >= rectangle2.position.y                            &&    
+        rectangle1.position.y                                       <= rectangle2.position.y + rectangle2.height / 2
     )
 }
 

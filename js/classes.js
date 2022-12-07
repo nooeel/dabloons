@@ -1,5 +1,5 @@
 class Sprite {
-    constructor({position, velocity, image, frames = {max: 1}, sprites }) {
+    constructor({position, velocity, image, frames = {max: 1}, sprites, size = 1 }) {
         this.position = position
         this.image = image
         this.frames = {...frames, value: 0, elapsed: 0}
@@ -11,6 +11,7 @@ class Sprite {
 
         this.moving = false
         this.sprites = sprites
+        this.size = size
     }
 
     draw() {
@@ -22,8 +23,8 @@ class Sprite {
             this.image.height,
             this.position.x,
             this.position.y,
-            this.image.width / this.frames.max,
-            this.image.height
+            this.image.width / this.frames.max * this.size,
+            this.image.height * this.size
         )
 
         if (!this.moving) return
