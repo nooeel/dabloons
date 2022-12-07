@@ -156,6 +156,13 @@ function showBoundary() {
 
 
 function moving() {
+
+    if (keys.w.pressed || keys.a.pressed || keys.s.pressed || keys.d.pressed) {
+        
+    }
+
+
+
     const playerStep = 3
     let moving = true
     player.moving = false
