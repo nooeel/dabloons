@@ -3,6 +3,7 @@
 const canvas = document.querySelector('canvas')
 const c = canvas.getContext('2d')  //context
 
+
 const development = true
 
 canvas.width = 1024
@@ -16,15 +17,18 @@ const offset = {
 }
 
 const collisionsMap = []
+for (let i = 0; i < collisionsData.length; i+= 140) {
+    collisionsMap.push(collisionsData.slice(i, 140 + i))
+}
 
-for (let i = 0; i < collisions.length; i+= 140) {
-    collisionsMap.push(collisions.slice(i, 140 + i))
+const doorsMap = []
+for (let i = 0; i < doorsData.length; i+= 140) {
+    doorsMap.push(doorsData.slice(i, 140 + i))
 }
 
 
 
 const boundaries = []
-
 collisionsMap.forEach((row, i) => {
     row.forEach((symbol, j) => {
         if (symbol === 1) {
@@ -39,6 +43,25 @@ collisionsMap.forEach((row, i) => {
         }
     })
 })
+
+
+const doors = []
+doorsMap.forEach((row, i) => {
+    row.forEach((symbol, j) => {
+        if (symbol === 2) {
+            doors.push(
+                new Door({
+                    position: {
+                        x: j * Door.width + offset.x ,  
+                        y: i * Door.height + offset.y 
+                    }
+                })
+            )
+        }
+    })
+})
+
+console.log(doors);
 
 
 
@@ -116,14 +139,14 @@ const keys = {
 }
 
 
-const movables = [townOneBg, fgTownOne, ...boundaries]
+const movables = [townOneBg, fgTownOne, ...boundaries, ...doors]
 
 function rectengularCollision({rectangle1, rectangle2}) {
     return( 
-        rectangle1.position.x + rectangle1.width * rectangle1.size  >= rectangle2.position.x + 5                        &&
-        rectangle1.position.x                                       <= rectangle2.position.x + rectangle2.width - 5     &&
+        rectangle1.position.x + rectangle1.width * rectangle1.size  >= rectangle2.position.x                            &&
+        rectangle1.position.x                                       <= rectangle2.position.x + rectangle2.width        &&
         rectangle1.position.y + rectangle1.height * rectangle1.size >= rectangle2.position.y                            &&    
-        rectangle1.position.y                                       <= rectangle2.position.y + rectangle2.height / 2
+        rectangle1.position.y                                       <= rectangle2.position.y + rectangle2.height
     )
 }
 
@@ -141,17 +164,22 @@ loop();
 function render() {
     townOneBg.draw()
 
-    showBoundary()
+    renderTiles()
+
 
     player.draw()
     fgTownOne.draw()  
 }
 
 
-function showBoundary() {
+function renderTiles() {
     boundaries.forEach(boundary => {
         boundary.draw()
     })   
+
+    doors.forEach(door => {
+        door.draw()
+    })
 }
 
 
@@ -159,7 +187,24 @@ function showBoundary() {
 function moving() {
 
     if (keys.w.pressed || keys.a.pressed || keys.s.pressed || keys.d.pressed) {
-        
+        for (let i = 0; i < doors.length; i++) {
+            const door = doors[i]
+            if (
+                rectengularCollision({
+                    rectangle1: player,
+                    rectangle2: {
+                        ...door,
+                        position: {
+                            x: door.position.x,
+                            y: door.position.y 
+                        }
+                    }
+                })
+            ) {
+                console.log("touching door");
+                break
+            }
+        }
     }
 
 
@@ -174,20 +219,24 @@ function moving() {
         player.image = player.sprites.up
 
         for (let i = 0; i < boundaries.length; i++) {
-                const boundary = boundaries[i]
+            const boundary = boundaries[i]
             if (
                 rectengularCollision({
                     rectangle1: player,
-                    rectangle2: {...boundary, position: {
-                        x: boundary.position.x,
-                        y: boundary.position.y + playerStep
-                    }}
+                    rectangle2: {
+                        ...boundary, 
+                        position: {
+                            x: boundary.position.x,
+                            y: boundary.position.y + playerStep
+                        }
+                    }
                 })
             ) {
                 moving = false
                 break
             }
-        }      
+        }
+
         if (moving) movables.forEach(movable => {movable.position.y += playerStep}) 
     }    
 
@@ -212,6 +261,7 @@ function moving() {
                 break
             }
         }
+
         if (moving) movables.forEach(movable => {movable.position.x += playerStep})
     }
 
@@ -236,6 +286,7 @@ function moving() {
                 break
             }
         }
+
         if (moving) movables.forEach(movable => {movable.position.y -= playerStep})
     }
 
@@ -260,6 +311,7 @@ function moving() {
                 break
             }
         }
+
         if (moving) movables.forEach(movable => {movable.position.x -= playerStep})
     }
 }

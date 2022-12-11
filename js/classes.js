@@ -49,8 +49,24 @@ class Boundary {
     }
 
     draw() {
-        //c.fillStyle = 'rgba(255, 0, 0, 0)'
-        c.fillStyle = 'rgba(255, 0, 0, 0.2)'  //sichtbare boundary
+        c.fillStyle = 'rgba(255, 0, 0, 0)'
+        //c.fillStyle = 'rgba(255, 0, 0, 0.2)'  //sichtbare boundary
+        c.fillRect(this.position.x, this.position.y, this.width, this.width)
+    }
+}
+
+class Door {
+    static width = 24
+    static height = 24
+    constructor({position}) {
+        this.position = position
+        this.height = 24
+        this.width = 24
+    }
+
+    draw() {
+        c.fillStyle = 'rgba(255, 0, 0, 0)'
+        c.fillStyle = 'rgba(0, 255, 255, 0.5)'  //sichtbare doors
         c.fillRect(this.position.x, this.position.y, this.width, this.width)
     }
 }
