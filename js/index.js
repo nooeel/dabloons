@@ -17,8 +17,8 @@ const offset = {
 
 const collisionsMap = []
 
-for (let i = 0; i < collisions.length; i+= 70) {
-    collisionsMap.push(collisions.slice(i, 70 + i))
+for (let i = 0; i < collisions.length; i+= 140) {
+    collisionsMap.push(collisions.slice(i, 140 + i))
 }
 
 
@@ -27,12 +27,12 @@ const boundaries = []
 
 collisionsMap.forEach((row, i) => {
     row.forEach((symbol, j) => {
-        if (symbol === 1025) {
+        if (symbol === 1) {
             boundaries.push(
                 new Boundary({
                     position: {
-                        x: j * Boundary.width + offset.x,  
-                        y: i * Boundary.height + offset.y
+                        x: j * Boundary.width + offset.x ,  
+                        y: i * Boundary.height + offset.y 
                     }
                 })
             )
@@ -86,7 +86,8 @@ const player = new Sprite({
         down: playerImgDown,
         left: playerImgLeft,
         right: playerImgRight
-    }
+    },
+    size: 0.75
 })
 
 const fgTownOne = new Sprite({
