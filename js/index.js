@@ -4,6 +4,13 @@ const canvas = document.querySelector('canvas')
 const c = canvas.getContext('2d')  //context
 
 
+let opacity = 1
+
+canvas.style.opacity =  opacity
+
+
+
+
 const development = true
 
 canvas.width = 1024
@@ -61,7 +68,6 @@ doorsMap.forEach((row, i) => {
     })
 })
 
-console.log(doors);
 
 
 
@@ -123,6 +129,16 @@ const fgTownOne = new Sprite({
 
 
 
+
+
+
+const movables = [townOneBg, fgTownOne, ...boundaries, ...doors]
+
+
+
+let onDoor = false
+
+
 const keys = {
     w: {
         pressed: false
@@ -135,11 +151,82 @@ const keys = {
     },
     d: {
         pressed: false
+    },
+    e: {
+        pressed: false
     }
 }
 
+let lastKey
+window.addEventListener('keydown', (e) => {
+    switch (e.key) {
+        case 'w' :
+            keys.w.pressed = true
+            lastKey = 'w'
+            break
+        
+        case 'a' :
+            keys.a.pressed = true
+            lastKey = 'a'
+            break
+        
+        case 's' :
+            keys.s.pressed = true
+            lastKey = 's'
+            break
+        
+        case 'd' :
+            keys.d.pressed = true
+            lastKey = 'd'
+            break
 
-const movables = [townOneBg, fgTownOne, ...boundaries, ...doors]
+        case 'e' :
+            keys.e.pressed = true
+            lastKey = 'e'
+            break
+    }
+})
+
+
+window.addEventListener('keyup', (e) => {
+    switch (e.key) {
+        case 'w' :
+            keys.w.pressed = false
+            break
+        
+        case 'a' :
+            keys.a.pressed = false
+            break
+        
+        case 's' :
+            keys.s.pressed = false
+            break
+        
+        case 'd' :
+            keys.d.pressed = false
+            break
+
+        case 'e' :
+            keys.e.pressed = false
+            break
+    }
+})
+
+
+
+// ende mit init
+
+
+function loop() {
+    window.requestAnimationFrame(loop)
+    render()
+    moving()
+}
+loop();
+
+
+// functions
+
 
 function rectengularCollision({rectangle1, rectangle2}) {
     return( 
@@ -149,15 +236,6 @@ function rectengularCollision({rectangle1, rectangle2}) {
         rectangle1.position.y                                       <= rectangle2.position.y + rectangle2.height
     )
 }
-
-
-
-function loop() {
-    window.requestAnimationFrame(loop)
-    render()
-    gameLogic()
-}
-loop();
 
 
 
@@ -186,6 +264,10 @@ function renderTiles() {
 
 function moving() {
 
+    if (keys.e.pressed && onDoor === true) {
+        console.log("door");
+    }
+
     if (keys.w.pressed || keys.a.pressed || keys.s.pressed || keys.d.pressed) {
         for (let i = 0; i < doors.length; i++) {
             const door = doors[i]
@@ -201,7 +283,7 @@ function moving() {
                     }
                 })
             ) {
-                console.log("touching door");
+                onDoor = true
                 break
             }
         }
@@ -319,57 +401,3 @@ function moving() {
 
 
 
-function gameLogic() {
-    
-    moving()
-}
-
-
-
-// event listener
-
-let lastKey
-window.addEventListener('keydown', (e) => {
-    switch (e.key) {
-        case 'w' :
-            keys.w.pressed = true
-            lastKey = 'w'
-            break
-        
-        case 'a' :
-            keys.a.pressed = true
-            lastKey = 'a'
-            break
-        
-        case 's' :
-            keys.s.pressed = true
-            lastKey = 's'
-            break
-        
-        case 'd' :
-            keys.d.pressed = true
-            lastKey = 'd'
-            break
-    }
-})
-
-
-window.addEventListener('keyup', (e) => {
-    switch (e.key) {
-        case 'w' :
-            keys.w.pressed = false
-            break
-        
-        case 'a' :
-            keys.a.pressed = false
-            break
-        
-        case 's' :
-            keys.s.pressed = false
-            break
-        
-        case 'd' :
-            keys.d.pressed = false
-            break
-    }
-})
