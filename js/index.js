@@ -11,6 +11,8 @@ canvas.style.opacity =  opacity
 
 
 
+
+
 const development = true
 
 canvas.width = 1024
@@ -214,18 +216,43 @@ window.addEventListener('keyup', (e) => {
 
 
 
-// ende mit init
+const testText = new Writing({
+    text: 'test',
+    position: {
+        x: 100,
+        y: 100
+    },
+    textColor: 'yellow'
+});
+
+
+// ----------------------------------------------------------------------------------------
+// ------------------------------       ENDE MIT INIT       -------------------------------
+// ----------------------------------------------------------------------------------------
+
+
 
 
 function loop() {
     window.requestAnimationFrame(loop)
     render()
     moving()
+    texting()
 }
 loop();
 
 
-// functions
+
+
+// ----------------------------------------------------------------------------------------
+// ------------------------------       FUNCTIONS       -----------------------------------
+// ----------------------------------------------------------------------------------------
+
+
+function texting() {
+    testText.write()
+}
+
 
 
 function rectengularCollision({rectangle1, rectangle2}) {
