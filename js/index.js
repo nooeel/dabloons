@@ -2,14 +2,14 @@
 
 const canvas = document.querySelector('canvas')
 const c = canvas.getContext('2d')  //context
+canvas.style.opacity = 1
+
+let currentScene = 1
 
 
-let opacity = 1
-
-canvas.style.opacity =  opacity
-
-
-const development = true
+let dt = 0
+let blendingOut = false
+let loading = false
 
 canvas.width = 1024
 canvas.height = 576
@@ -145,6 +145,8 @@ const movables = [townOneBg, fgTownOne, ...boundaries, ...doors]
 let onDoor = 0
 
 
+// keyListener
+
 const keys = {
     w: {
         pressed: false
@@ -160,10 +162,17 @@ const keys = {
     },
     e: {
         pressed: false
-    }
+    },
+    o: {
+        pressed: false
+    },
+    l: {
+        pressed: false
+    },
 }
 
 let lastKey
+let key
 window.addEventListener('keydown', (e) => {
     switch (e.key) {
         case 'w' :
@@ -190,8 +199,19 @@ window.addEventListener('keydown', (e) => {
             keys.e.pressed = true
             lastKey = 'e'
             break
+
+        case 'o' :
+            keys.o.pressed = true
+            lastKey = 'o'
+            break   
+            
+        case 'l' :
+            keys.l.pressed = true
+            lastKey = 'l'
+            break      
     }
 })
+
 
 
 window.addEventListener('keyup', (e) => {
@@ -215,6 +235,16 @@ window.addEventListener('keyup', (e) => {
         case 'e' :
             keys.e.pressed = false
             break
+        
+        case 'o' :
+            keys.o.pressed = false
+            lastKey = 'o'
+            break   
+            
+        case 'l' :
+            keys.l.pressed = false
+            lastKey = 'l'
+            break   
     }
 })
 
@@ -239,9 +269,16 @@ const testText = new Writing({
 
 function loop() {
     window.requestAnimationFrame(loop)
-    render()
-    moving()
+    
+    
+    render(currentScene)
+    eventListening()
     texting()
+
+    
+    console.log(dt + 'dt: ' + loading);
+
+    dt += 1
 }
 loop();
 
@@ -253,51 +290,32 @@ loop();
 // ----------------------------------------------------------------------------------------
 
 
-function texting() {
-    testText.write()
-}
+function render(currentScene) {
 
-
-
-function rectengularCollision({rectangle1, rectangle2}) {
-    return( 
-        rectangle1.position.x + rectangle1.width * rectangle1.size  >= rectangle2.position.x                            &&
-        rectangle1.position.x                                       <= rectangle2.position.x + rectangle2.width        &&
-        rectangle1.position.y + rectangle1.height * rectangle1.size >= rectangle2.position.y                            &&    
-        rectangle1.position.y                                       <= rectangle2.position.y + rectangle2.height
-    )
-}
-
-
-
-function render() {
     townOneBg.draw()
 
     renderTiles()
-
 
     player.draw()
     fgTownOne.draw()  
 }
 
 
-function renderTiles() {
-    boundaries.forEach(boundary => {
-        boundary.draw()
-    })   
-
-    doors.forEach(door => {
-        door.draw()
-    })
+function texting() {
+    testText.write()
 }
 
 
 
-function moving() {
 
-    if (keys.e.pressed && onDoor != 0) {
-        console.log("door " + onDoor);
+
+function eventListening() {
+
+    if (blendingOut === true) {
+        blendOut({blendSpeed: 0.05})
     }
+    
+    
 
     if (keys.w.pressed || keys.a.pressed || keys.s.pressed || keys.d.pressed) {
         for (let i = 0; i < doors.length; i++) {
@@ -320,6 +338,21 @@ function moving() {
         }
     }
 
+    if (keys.e.pressed && onDoor != 0) {
+        console.log("door " + onDoor);
+        blendingOut = true
+
+    }
+
+
+    
+
+    moving()
+}
+
+
+
+function moving() {
 
 
     const playerStep = 3
@@ -427,8 +460,45 @@ function moving() {
 
         if (moving) movables.forEach(movable => {movable.position.x -= playerStep})
     }
+
 }
 
 
 
 
+function blendOut({blendSpeed}) {
+
+    if (canvas.style.opacity != 0) {
+        canvas.style.opacity -= blendSpeed
+    } else {
+        loading = true
+    }
+    //console.log(dt + 'dt: ' + canvas.style.opacity);
+
+    
+}
+
+
+function rectengularCollision({rectangle1, rectangle2}) {
+    return( 
+        rectangle1.position.x + rectangle1.width * rectangle1.size  >= rectangle2.position.x                            &&
+        rectangle1.position.x                                       <= rectangle2.position.x + rectangle2.width        &&
+        rectangle1.position.y + rectangle1.height * rectangle1.size >= rectangle2.position.y                            &&    
+        rectangle1.position.y                                       <= rectangle2.position.y + rectangle2.height
+    )
+}
+
+
+
+
+
+
+function renderTiles() {
+    boundaries.forEach(boundary => {
+        boundary.draw()
+    })   
+
+    doors.forEach(door => {
+        door.draw()
+    })
+}
