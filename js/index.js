@@ -292,6 +292,7 @@ loop();
 
 function render(currentScene) {
 
+    currentScene
     townOneBg.draw()
 
     renderTiles()
