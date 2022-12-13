@@ -9,10 +9,6 @@ let opacity = 1
 canvas.style.opacity =  opacity
 
 
-
-
-
-
 const development = true
 
 canvas.width = 1024
@@ -24,6 +20,30 @@ const offset = {
     x: -713,
     y: -600
 }
+
+
+
+const townOneImgRaw = new Image()
+townOneImgRaw.src = 'assets/Images/townOne.png'
+
+const fgTownOneImgRaw = new Image()
+fgTownOneImgRaw.src = 'assets/Images/fgTownOne.png'
+
+
+const playerImgUp = new Image()
+playerImgUp.src = 'assets/Images/playerUp.png'
+
+const playerImgDown = new Image()
+playerImgDown.src = 'assets/Images/playerDown.png'
+
+const playerImgLeft = new Image()
+playerImgLeft.src = 'assets/Images/playerLeft.png'
+
+const playerImgRight = new Image()
+playerImgRight.src = 'assets/Images/playerRight.png'
+
+
+
 
 const collisionsMap = []
 for (let i = 0; i < collisionsData.length; i+= 140) {
@@ -57,13 +77,14 @@ collisionsMap.forEach((row, i) => {
 const doors = []
 doorsMap.forEach((row, i) => {
     row.forEach((symbol, j) => {
-        if (symbol === 2) {
+        if (symbol === 1, 2, 3) {
             doors.push(
                 new Door({
                     position: {
                         x: j * Door.width + offset.x ,  
                         y: i * Door.height + offset.y 
-                    }
+                    },
+                    index: symbol
                 })
             )
         }
@@ -73,24 +94,7 @@ doorsMap.forEach((row, i) => {
 
 
 
-const townOneImgRaw = new Image()
-townOneImgRaw.src = 'assets/Images/townOne.png'
 
-const fgTownOneImgRaw = new Image()
-fgTownOneImgRaw.src = 'assets/Images/fgTownOne.png'
-
-
-const playerImgUp = new Image()
-playerImgUp.src = 'assets/Images/playerUp.png'
-
-const playerImgDown = new Image()
-playerImgDown.src = 'assets/Images/playerDown.png'
-
-const playerImgLeft = new Image()
-playerImgLeft.src = 'assets/Images/playerLeft.png'
-
-const playerImgRight = new Image()
-playerImgRight.src = 'assets/Images/playerRight.png'
 
 
 
@@ -138,7 +142,7 @@ const movables = [townOneBg, fgTownOne, ...boundaries, ...doors]
 
 
 
-let onDoor = false
+let onDoor = 0
 
 
 const keys = {
@@ -291,8 +295,8 @@ function renderTiles() {
 
 function moving() {
 
-    if (keys.e.pressed && onDoor === true) {
-        console.log("door");
+    if (keys.e.pressed && onDoor != 0) {
+        console.log("door " + onDoor);
     }
 
     if (keys.w.pressed || keys.a.pressed || keys.s.pressed || keys.d.pressed) {
@@ -310,7 +314,7 @@ function moving() {
                     }
                 })
             ) {
-                onDoor = true
+                onDoor = door.index
                 break
             }
         }

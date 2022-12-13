@@ -44,8 +44,8 @@ class Boundary {
     static height = 24
     constructor({position}) {
         this.position = position
-        this.height = 24
-        this.width = 24
+        this.width = Boundary.width
+        this.height = Boundary.height
     }
 
     draw() {
@@ -58,10 +58,11 @@ class Boundary {
 class Door {
     static width = 24
     static height = 24
-    constructor({position}) {
+    constructor({position, index}) {
+        this.width = Door.width
+        this.height = Door.height
         this.position = position
-        this.height = 24
-        this.width = 24
+        this.index = index
     }
 
     draw() {
@@ -76,7 +77,8 @@ class Door {
 class Writing {
     constructor ({
         text, 
-        font = '30px Arial', 
+        font = 'Arial', 
+        size = '3w0',
         position, 
         padding = 0, 
         textBaseline = 'top',
@@ -85,7 +87,7 @@ class Writing {
         borderColor = 'rgba(0, 0, 0, 0)'
     }) {
         this.text = text
-        this.font = font
+        this.font = size + 'px ' + font
         this.position = position
         this.padding = padding
         this.textBaseline = textBaseline
