@@ -4,6 +4,9 @@ const canvas = document.querySelector('canvas')
 const c = canvas.getContext('2d')  //context
 canvas.style.opacity = 1
 
+
+
+
 let currentScene = 1
 
 
@@ -28,6 +31,10 @@ townOneImgRaw.src = 'assets/Images/townOne.png'
 
 const fgTownOneImgRaw = new Image()
 fgTownOneImgRaw.src = 'assets/Images/fgTownOne.png'
+
+
+const banner6x3ImgRaw = new Image()
+banner6x3ImgRaw.src = 'assets/Images/banner6x3.png'
 
 
 const playerImgUp = new Image()
@@ -133,6 +140,15 @@ const fgTownOne = new Sprite({
     image: fgTownOneImgRaw
 })
 
+
+const banner6x3 = new Sprite({
+    position: {
+        x: canvas.width - canvas.width / 4,
+        y: 30
+    },
+    image: banner6x3ImgRaw,
+    size: 1
+})
 
 
 
@@ -262,26 +278,49 @@ const testText = new Writing({
 
 let events = []
 
+let be = Date.now(),fps=0,info='';
 
 // ----------------------------------------------------------------------------------------
 // ------------------------------       ENDE MIT INIT       -------------------------------
 // ----------------------------------------------------------------------------------------
 
+let now
+let before
 
+let secondsRunning = 0
+let minutesRunning = 0
+let timeRunning = '0'
 
 
 function loop() {
+    
+    
+    now = Date.now()
+    fps = Math.round(1000 / (now - before))
+    
+    
     window.requestAnimationFrame(loop)
+
+
+    dt += 1
     
     
     render(currentScene)
     eventListening()
     texting()
 
-    
-    //console.log(dt + 'dt: ' + loading);
+    test()
+    // console.log(secondsRunning + 'dt: ' + fps);
 
-    dt += 1
+    if (fps > 99) {
+        fps = 99
+    }
+    
+    before = now
+
+    setTimeRunning()
+    setDocumentTitle()
+    
 }
 loop();
 
@@ -292,8 +331,26 @@ loop();
 // ------------------------------       FUNCTIONS       -----------------------------------
 // ----------------------------------------------------------------------------------------
 
+function setTimeRunning() {
+    secondsRunning = Math.round(dt / 60)
+
+
+    minutesRunning = Math.floor(secondsRunning / 60)
+
+    timeRunning = minutesRunning + ':' + secondsRunning % 60 + 'min'
+}
+
+function setDocumentTitle() {
+    document.title = 
+        'Dabloons ' + 
+        fps + 'FPS ' + 
+        timeRunning
+    
+}
 
 function render(currentScene) {
+
+    test()
 
     if (currentScene === 0) {   // 0 - start
 
@@ -308,8 +365,13 @@ function render(currentScene) {
 }
 
 
-function texting() {
+function test() {
     testTexting()
+    sendMessageBanner({text: testText, dauer: 300})
+}
+
+function texting() {
+    
 }
 
 
@@ -517,4 +579,9 @@ function renderTiles() {
 
 function setCurrentScene(newScene) {
     currentScene = newScene
+}
+
+
+function sendMessageBanner({text, dauer}) {
+    banner6x3.position.x = 1
 }
