@@ -78,7 +78,7 @@ class Writing {
     constructor ({
         text, 
         font = 'Arial', 
-        size = '3w0',
+        size = '30',
         position, 
         padding = 0, 
         textBaseline = 'top',
@@ -95,6 +95,7 @@ class Writing {
         this.backgroundColor = backgroundColor
         this.borderColor = borderColor
     }
+
     write() {
         c.font = this.font;
         c.textBaseline = this.textBaseline;
@@ -110,6 +111,23 @@ class Writing {
         c.fillStyle = this.textColor;
         c.fillText(this.text, this.position.x + this.padding / 2, this.position.y + this.padding / 2);
     }
+
+}
+
+
+
+class BannerMessage {
+    constructor({text, index}) {
+        this.text
+        this.index = index
+
+        textBody = new Writing({
+            text,
+            
+        })
+    }
+
+    
 
 }
 

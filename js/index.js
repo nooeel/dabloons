@@ -253,11 +253,14 @@ window.addEventListener('keyup', (e) => {
 const testText = new Writing({
     text: 'test',
     position: {
-        x: 100,
-        y: 100
+        x: canvas.width - canvas.width/4,
+        y: 20
     },
-    textColor: 'yellow'
+    textColor: 'white',
+    backgroundColor: 'lightgrey'
 });
+
+let events = []
 
 
 // ----------------------------------------------------------------------------------------
@@ -276,7 +279,7 @@ function loop() {
     texting()
 
     
-    console.log(dt + 'dt: ' + loading);
+    //console.log(dt + 'dt: ' + loading);
 
     dt += 1
 }
@@ -292,22 +295,27 @@ loop();
 
 function render(currentScene) {
 
-    currentScene
-    townOneBg.draw()
+    if (currentScene === 0) {   // 0 - start
 
-    renderTiles()
-
-    player.draw()
-    fgTownOne.draw()  
+    } else if (currentScene === 1){     // 1 - town one
+        townOneBg.draw()
+        player.draw()
+        fgTownOne.draw()
+    } else {
+        console.error('Scene: ' + currentScene + ' not found.');
+        setCurrentScene(0) // to start
+    }
 }
 
 
 function texting() {
-    testText.write()
+    testTexting()
 }
 
 
-
+function testTexting() {
+    testText.write()
+}
 
 
 function eventListening() {
@@ -502,4 +510,11 @@ function renderTiles() {
     doors.forEach(door => {
         door.draw()
     })
+}
+
+
+
+
+function setCurrentScene(newScene) {
+    currentScene = newScene
 }
