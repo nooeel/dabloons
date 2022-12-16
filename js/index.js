@@ -19,6 +19,8 @@ canvas.height = 576
 
 
 
+
+
 const offset = {
     x: -713,
     y: -600
@@ -143,11 +145,27 @@ const fgTownOne = new Sprite({
 
 const banner6x3 = new Sprite({
     position: {
-        x: canvas.width - canvas.width / 4,
-        y: 30
+        x: 100,
+        y: 100
     },
-    image: banner6x3ImgRaw,
-    size: 1
+    image: banner6x3ImgRaw
+})
+
+const textBody = new Writing({
+    text: 'nan',
+    position: {
+        x: 100,
+        y: 100
+    },
+    textColor: 'white'
+})
+
+
+
+const bannerMessage = new BannerMessage({
+    textBody: textBody,
+    index: 1,
+    banner: banner6x3
 })
 
 
@@ -265,20 +283,17 @@ window.addEventListener('keyup', (e) => {
 })
 
 
-
-const testText = new Writing({
-    text: 'test',
-    position: {
-        x: canvas.width - canvas.width/4,
-        y: 20
-    },
-    textColor: 'white',
-    backgroundColor: 'lightgrey'
-});
-
 let events = []
 
 let be = Date.now(),fps=0,info='';
+
+let dtBeginBannerMsg = 0
+let dtBannerMsg
+
+let dtInFadeBannerMsg = 0
+
+const msgBannerSpeed = 4.5
+const bannerPosX = 20
 
 // ----------------------------------------------------------------------------------------
 // ------------------------------       ENDE MIT INIT       -------------------------------
@@ -337,7 +352,13 @@ function setTimeRunning() {
 
     minutesRunning = Math.floor(secondsRunning / 60)
 
-    timeRunning = minutesRunning + ':' + secondsRunning % 60 + 'min'
+    if (secondsRunning%60 < 10) {
+        timeRunning = minutesRunning + ':' + '0' + secondsRunning % 60 + 'min'
+    } else {
+        timeRunning = minutesRunning + ':' + secondsRunning % 60 + 'min'
+    }
+    
+
 }
 
 function setDocumentTitle() {
@@ -366,18 +387,15 @@ function render(currentScene) {
 
 
 function test() {
-    testTexting()
-    sendMessageBanner({text: testText, dauer: 300})
-}
-
-function texting() {
     
 }
 
-
-function testTexting() {
-    testText.write()
+function texting() {
+    sendMessageBanner({text: 'testText', dauer: 20})
 }
+
+
+
 
 
 function eventListening() {
@@ -582,6 +600,27 @@ function setCurrentScene(newScene) {
 }
 
 
-function sendMessageBanner({text, dauer}) {
-    banner6x3.position.x = 1
+
+
+function sendMessageBanner({index, dauer}) {
+
+    
+
+    dtInFadeBannerMsg = (100 + bannerPosX) / msgBannerSpeed
+
+    if (dtBeginBannerMsg === 0) {
+        dtBeginBannerMsg = dt
+    }
+
+    dtBannerMsg = dt - dtBeginBannerMsg
+    
+    
+    if (dtBannerMsg < dtInFadeBannerMsg) { 
+        bannerMessage.position.y = dtBannerMsg * msgBannerSpeed - 100
+    } 
+    
+    if (dtBannerMsg < dtInFadeBannerMsg + dauer * 60) {
+        bannerMessage.draw()
+    }    
+    
 }

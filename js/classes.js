@@ -79,7 +79,7 @@ class Writing {
         text, 
         font = 'Arial', 
         size = '30',
-        position, 
+        position = { x: 0, y: 0 }, 
         padding = 0, 
         textBaseline = 'top',
         textColor = 'black',
@@ -117,14 +117,32 @@ class Writing {
 
 
 class BannerMessage {
-    constructor({text, index}) {
-        this.text
-        this.index = index
+    constructor({
+        textBody, 
+        banner = banner6x3,
+        position = {
+            x: canvas.width - canvas.width / 4,
+            y: 100
+        },
+        
+    }) {
 
-        textBody = new Writing({
-            text,
-            
-        })
+        
+        this.textBody = textBody
+        this.banner = banner
+        this.position = position
+        
+
+        
+    }
+
+    draw() {
+        this.banner.position = this.position
+        this.banner.draw()
+
+        this.textBody.position.x = this.position.x + 15
+        this.textBody.position.y = this.position.y + 20
+        this.textBody.write()
     }
 
     

@@ -3,7 +3,7 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "Pellet Town.tmx",
+    "activeFile": "",
     "expandedProjectPaths": [
         "."
     ],
@@ -15,6 +15,14 @@
             "viewCenter": {
                 "x": 420.2033746787351,
                 "y": 240.2950050284948
+            }
+        },
+        "banner.tmx": {
+            "scale": 6.99140625,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 96.04648564085372,
+                "y": 47.77293552352217
             }
         },
         "banner.tsx": {
@@ -34,11 +42,11 @@
     "map.lastUsedFormat": "tmx",
     "map.width": 6,
     "openFiles": [
-        "Pellet Town.tmx"
     ],
     "project": "hud.tiled-project",
     "recentFiles": [
         "banner.tsx",
+        "banner.tmx",
         "Pellet Town.tmx"
     ],
     "resizeMap.removeObjects": true,
