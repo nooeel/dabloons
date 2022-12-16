@@ -151,19 +151,39 @@ const banner6x3 = new Sprite({
     image: banner6x3ImgRaw
 })
 
-const textBody = new Writing({
-    text: 'nan',
-    position: {
-        x: 100,
-        y: 100
-    },
-    textColor: 'white'
-})
+const textBodyBannerMessage = [
+    new Writing({
+        text: 'nan',
+        position: {
+            x: 100,
+            y: 100
+        },
+        textColor: 'white'
+    }),
+
+    new Writing({
+        text: 'test1',
+        position: {
+            x: 100,
+            y: 100
+        },
+        textColor: 'white'
+    }),
+
+    new Writing({
+        text: 'test2',
+        position: {
+            x: 100,
+            y: 100
+        },
+        textColor: 'white'
+    }),
+]
 
 
 
 const bannerMessage = new BannerMessage({
-    textBody: textBody,
+    textBody: textBodyBannerMessage[0],
     index: 1,
     banner: banner6x3
 })
@@ -289,11 +309,22 @@ let be = Date.now(),fps=0,info='';
 
 let dtBeginBannerMsg = 0
 let dtBannerMsg
+let bannerLoop = false
+
+let bannerIndex
+let bannerDauer
 
 let dtInFadeBannerMsg = 0
 
 const msgBannerSpeed = 4.5
 const bannerPosX = 20
+
+
+
+let archievement = [
+    false, 
+    false,  //onDoor
+]
 
 // ----------------------------------------------------------------------------------------
 // ------------------------------       ENDE MIT INIT       -------------------------------
@@ -383,6 +414,10 @@ function render(currentScene) {
         console.error('Scene: ' + currentScene + ' not found.');
         setCurrentScene(0) // to start
     }
+
+    if (bannerLoop === true) {
+        sendMessageBanner({index: bannerIndex, dauer: bannerDauer})
+    }
 }
 
 
@@ -391,7 +426,6 @@ function test() {
 }
 
 function texting() {
-    sendMessageBanner({text: 'testText', dauer: 20})
 }
 
 
@@ -433,6 +467,11 @@ function eventListening() {
 
     }
 
+    if (onDoor != 0 && archievement[1] === false) {
+        sendMessageBanner({index: 1, dauer: 10})
+        console.log('Du hast das archievement "Es ist eine Tuer!" freigeschalten');
+        archievement[1] = true
+    }
 
     
 
@@ -604,12 +643,15 @@ function setCurrentScene(newScene) {
 
 function sendMessageBanner({index, dauer}) {
 
-    
+    bannerMessage.textBody = textBodyBannerMessage[index]
 
     dtInFadeBannerMsg = (100 + bannerPosX) / msgBannerSpeed
 
     if (dtBeginBannerMsg === 0) {
         dtBeginBannerMsg = dt
+        bannerLoop = true
+        bannerIndex = index
+        bannerDauer = dauer
     }
 
     dtBannerMsg = dt - dtBeginBannerMsg
@@ -622,5 +664,10 @@ function sendMessageBanner({index, dauer}) {
     if (dtBannerMsg < dtInFadeBannerMsg + dauer * 60) {
         bannerMessage.draw()
     }    
+
+    if (dtBannerMsg > dtInFadeBannerMsg + dauer * 60) {
+        dtBeginBannerMsg === 0
+        bannerLoop = false
+    }
     
 }
