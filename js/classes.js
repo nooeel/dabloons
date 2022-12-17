@@ -148,11 +148,11 @@ class BannerMessage {
         this.heading.position.y = this.position.y + 3
         this.heading.write()
 
-        this.textBodyHeading.position.x = this.position.x + 15
+        this.textBodyHeading.position.x = this.position.x + 12
         this.textBodyHeading.position.y = this.position.y + 20
         this.textBodyHeading.write()
 
-        this.textBody.position.x = this.position.x + 15
+        this.textBody.position.x = this.position.x + 12
         this.textBody.position.y = this.position.y + 35
         this.textBody.write()
     }
