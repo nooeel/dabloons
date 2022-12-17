@@ -151,6 +151,42 @@ const banner6x3 = new Sprite({
     image: banner6x3ImgRaw
 })
 
+const textBodyBannerMessageHeading = [
+    new Writing({
+        text: '0',
+        position: {
+            x: 100,
+            y: 100
+        },
+        textColor: 'white'
+    }),
+
+    new Writing({
+        text: 'Its a-door-able',
+        position: {
+            x: 100,
+            y: 100
+        },
+        textColor: '#2020ff',
+        backgroundColor: 'lightgrey',
+        size: 12,
+        padding: 2
+    }),
+
+    new Writing({
+        text: '2',
+        position: {
+            x: 100,
+            y: 100
+        },        
+        textColor: 'white'
+    }),
+]
+
+
+
+
+
 const textBodyBannerMessage = [
     new Writing({
         text: 'nan',
@@ -162,12 +198,15 @@ const textBodyBannerMessage = [
     }),
 
     new Writing({
-        text: 'test1',
+        text: 'Druecke "e" um Tueren zu oeffnen',
         position: {
             x: 100,
             y: 100
         },
-        textColor: 'white'
+        textColor: '#2020ff',
+        backgroundColor: 'lightgrey',
+        padding: 2,
+        size: 10
     }),
 
     new Writing({
@@ -181,8 +220,21 @@ const textBodyBannerMessage = [
 ]
 
 
+const bannerMessageHeading = 
+    new Writing({
+        text: 'Archievements',
+        position: {
+            x: 0,
+            y: 0
+        },
+        textColor: '#ff2020',
+        size: 12
+    })
+
 
 const bannerMessage = new BannerMessage({
+    heading: bannerMessageHeading,
+    textBodyHeading: textBodyBannerMessageHeading[0],
     textBody: textBodyBannerMessage[0],
     index: 1,
     banner: banner6x3
@@ -469,7 +521,7 @@ function eventListening() {
 
     if (onDoor != 0 && archievement[1] === false) {
         sendMessageBanner({index: 1, dauer: 10})
-        console.log('Du hast das archievement "Es ist eine Tuer!" freigeschalten');
+        console.log('Du hast das archievement "A-door-able!" freigeschalten');
         archievement[1] = true
     }
 
@@ -643,6 +695,7 @@ function setCurrentScene(newScene) {
 
 function sendMessageBanner({index, dauer}) {
 
+    bannerMessage.textBodyHeading = textBodyBannerMessageHeading[index]
     bannerMessage.textBody = textBodyBannerMessage[index]
 
     dtInFadeBannerMsg = (100 + bannerPosX) / msgBannerSpeed
