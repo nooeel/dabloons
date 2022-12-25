@@ -7,7 +7,7 @@ canvas.style.opacity = 1
 
 
 
-let currentScene = 0
+let currentScene = 1
 
 
 let dt = 0
@@ -202,7 +202,7 @@ const textBodyBannerMessage = [
     }),
 
     new Writing({
-        text: 'Druecke "e" um Tueren zu oeffnen',
+        text: 'Press "e" to open doors',
         position: {
             x: 100,
             y: 100
