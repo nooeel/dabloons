@@ -1,0 +1,41 @@
+{
+    "activeFile": "big-innenraum.tsx",
+    "expandedProjectPaths": [
+    ],
+    "fileStates": {
+        "TentInside.tsx": {
+            "scaleInDock": 0.5,
+            "scaleInEditor": 1
+        },
+        "big-innenraum.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "furniture-simple.tsx": {
+            "scaleInDock": 0.5,
+            "scaleInEditor": 1
+        },
+        "recources.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "wowicons.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1.5
+        }
+    },
+    "openFiles": [
+        "furniture-simple.tsx",
+        "recources.tsx",
+        "TentInside.tsx",
+        "big-innenraum.tsx"
+    ],
+    "project": "house.tiled-project",
+    "recentFiles": [
+        "big-innenraum.tsx",
+        "TentInside.tsx",
+        "recources.tsx",
+        "furniture-simple.tsx",
+        "wowicons.tsx"
+    ]
+}

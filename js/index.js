@@ -7,7 +7,7 @@ canvas.style.opacity = 1
 
 
 
-let currentScene = 1
+let currentScene = 0
 
 
 let dt = 0
@@ -35,6 +35,10 @@ const fgTownOneImgRaw = new Image()
 fgTownOneImgRaw.src = 'assets/Images/fgTownOne.png'
 
 
+
+
+
+
 const banner6x3ImgRaw = new Image()
 banner6x3ImgRaw.src = 'assets/Images/banner6x3.png'
 
@@ -54,20 +58,20 @@ playerImgRight.src = 'assets/Images/playerRight.png'
 
 
 
-const collisionsMap = []
+const collisionsMapTownOne = []
 for (let i = 0; i < collisionsData.length; i+= 140) {
-    collisionsMap.push(collisionsData.slice(i, 140 + i))
+    collisionsMapTownOne.push(collisionsData.slice(i, 140 + i))
 }
 
-const doorsMap = []
+const doorsMapTownOne = []
 for (let i = 0; i < doorsData.length; i+= 140) {
-    doorsMap.push(doorsData.slice(i, 140 + i))
+    doorsMapTownOne.push(doorsData.slice(i, 140 + i))
 }
 
 
 
 const boundaries = []
-collisionsMap.forEach((row, i) => {
+collisionsMapTownOne.forEach((row, i) => {
     row.forEach((symbol, j) => {
         if (symbol === 1) {
             boundaries.push(
@@ -84,7 +88,7 @@ collisionsMap.forEach((row, i) => {
 
 
 const doors = []
-doorsMap.forEach((row, i) => {
+doorsMapTownOne.forEach((row, i) => {
     row.forEach((symbol, j) => {
         if (symbol === 1, 2, 3) {
             doors.push(
@@ -377,6 +381,13 @@ let archievement = [
     false, 
     false,  //onDoor
 ]
+
+
+
+
+
+
+
 
 // ----------------------------------------------------------------------------------------
 // ------------------------------       ENDE MIT INIT       -------------------------------
