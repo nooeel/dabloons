@@ -10,7 +10,7 @@ class Door {
 
     draw() {
         c.fillStyle = 'rgba(255, 0, 0, 0)'
-        //c.fillStyle = 'rgba(0, 255, 255, 0.5)'  //sichtbare doors
+        c.fillStyle = 'rgba(0, 0, 255, 0.2)'  //sichtbare doors
         c.fillRect(this.position.x, this.position.y, this.width, this.width)
     }
 }

@@ -11,7 +11,7 @@ canvas.style.opacity = 1
 
 
 
-let currentScene = 0
+let currentScene = 2
 let nextScene = NaN
 
 
@@ -143,13 +143,13 @@ doorsMapTownOne.forEach((row, i) => {
 // house one town one
 
 const collisionsMapHouseOne = []
-for (let i = 0; i < collisionsData_houseOne.length; i+= 38) {
-    collisionsMapHouseOne.push(collisionsData_houseOne.slice(i, 38 + i))
+for (let i = 0; i < collisionsData_houseOne.length; i+= 42) {
+    collisionsMapHouseOne.push(collisionsData_houseOne.slice(i, 42 + i))
 }
 
 const doorsMapHouseOne = []
-for (let i = 0; i < doorsData_houseOne.length; i+= 38) {
-    doorsMapHouseOne.push(doorsData_houseOne.slice(i, 38 + i))
+for (let i = 0; i < usablesData_houseOne.length; i+= 42) {
+    doorsMapHouseOne.push(usablesData_houseOne.slice(i, 42 + i))
 }
 
 
@@ -184,17 +184,15 @@ doorsMapHouseOne.forEach((row, i) => {
                         y: i * Door.height + offset.y 
                     },
                     pixel: {
-                        x: 32,
-                        y: 32
+                        x: 24,
+                        y: 24
                     },
-                    index: symbol
+                    index: 1
                 })
             )
         }
     })
 })
-
-console.log(collisionsMapHouseOne);
 
 
 
@@ -208,6 +206,11 @@ const doorsDestiny = [
     1,  // d5 h2
     1,  // d6 h3
 
+]
+
+const doorsDestinyHouseOne = [
+    NaN,
+    1,  // d1 h1
 ]
 
 // Sprites erstellen
@@ -436,6 +439,7 @@ const movablesHouseOne = [
 
 
 let onDoor = 0
+let onDoorHouseOne = 0
 
 
 // keyListener
@@ -618,6 +622,8 @@ function loop() {
     eventListening(currentScene)
     // console.log(secondsRunning + 'dt: ' + fps);
 
+    
+
     if (fps > 99) {
         fps = 99
     }
@@ -628,7 +634,13 @@ function loop() {
     setDocumentTitle(currentScene)
 
     //boundaries.forEach(boundary => {boundary.draw()})
+
+    doors.forEach(door => {door.draw()})
+
+    doorsHouseOne.forEach(door => {door.draw()})
     boundariesHouseOne.forEach(boundary => {boundary.draw()})
+
+    console.log('onDoor: ' + onDoor +' - onDoorHouseOne: ' + onDoorHouseOne);
 }
 loop();
 
@@ -654,6 +666,7 @@ function render(currentScene) {
 
 
         case 1: // townOne
+            
             player.size = 0.75
             townOneBg.draw()
             player.draw()
@@ -702,8 +715,8 @@ function setDocumentTitle(currentScene) {
     document.title = 
         'Dabl00ns ' + 
         fps + 'FPS ' + 
-        timeRunning +
-        ' Scn: ' + currentScene
+        timeRunning //+
+        //' Scn: ' + currentScene
 }
 
 
@@ -729,9 +742,10 @@ function eventListening(currentScene) {
     //     setCurrentScene(nextScene)
         
     // }
+    
 
 
-    if (keys.w.pressed || keys.a.pressed || keys.s.pressed || keys.d.pressed) {
+    if (currentScene === 1 && (keys.w.pressed || keys.a.pressed || keys.s.pressed || keys.d.pressed)) {
         for (let i = 0; i < doors.length; i++) {
             const door = doors[i]
             if (
@@ -752,7 +766,43 @@ function eventListening(currentScene) {
         }
     }
 
-    if (keys.e.pressed && onDoor != 0) setCurrentScene(doorsDestiny[onDoor])
+    if (currentScene === 2 && (keys.w.pressed || keys.a.pressed || keys.s.pressed || keys.d.pressed)) {
+        for (let i = 0; i < doorsHouseOne.length; i++) {
+            const doorHouse = doorsHouseOne[i]
+            if (
+                rectengularCollision({
+                    rectangle1: player,
+                    rectangle2: {
+                        ...doorHouse,
+                        position: {
+                            x: doorHouse.position.x,
+                            y: doorHouse.position.y 
+                        }
+                    }
+                })
+            ) {
+                onDoorHouseOne = doorHouse.index
+            }
+        }
+    }
+
+    switch (currentScene) {
+        case 1:
+            if (keys.e.pressed && onDoor!= 0) setCurrentScene(doorsDestiny[onDoor])
+            break
+
+        case 2:
+            if (keys.e.pressed && onDoor != 0) {
+                setCurrentScene(doorsDestinyHouseOne[1])
+                console.log('test');
+            }
+            break
+    
+        default:
+            break;
+    }
+
+    
     
 
 
@@ -946,6 +996,7 @@ function moving(currentScene) {
                         break
                     }
                 }
+                
         
                 if (moving) movablesHouseOne.forEach(movable => {movable.position.x += playerStep})
             }
@@ -974,7 +1025,6 @@ function moving(currentScene) {
         
                 if (moving) movablesHouseOne.forEach(movable => {movable.position.y -= playerStep})
             }
-        
         
         
             else if (keys.d.pressed && lastKey === 'd') {
@@ -1075,6 +1125,7 @@ function renderTiles(currentScene) {
 
 function setCurrentScene(newScene) {
     c.clearRect(0, 0, canvas.width, canvas.height)
+
     currentScene = newScene
     return 'new Scene is Scene: ' + newScene
 }
