@@ -7,7 +7,9 @@ canvas.style.opacity = 1
 
 
 
-let currentScene = 1
+
+
+let currentScene = 0
 
 
 let dt = 0
@@ -37,10 +39,14 @@ fgTownOneImgRaw.src = 'assets/Images/fgTownOne.png'
 
 
 
-
+const dabloonImgRaw = new Image()
+dabloonImgRaw.src = 'assets/Images/dabloon.png'
 
 const banner6x3ImgRaw = new Image()
 banner6x3ImgRaw.src = 'assets/Images/banner6x3.png'
+
+
+
 
 
 const playerImgUp = new Image()
@@ -58,14 +64,17 @@ playerImgRight.src = 'assets/Images/playerRight.png'
 
 
 
+// mapping collisions etc
+
+
 const collisionsMapTownOne = []
 for (let i = 0; i < collisionsData.length; i+= 140) {
     collisionsMapTownOne.push(collisionsData.slice(i, 140 + i))
 }
 
 const doorsMapTownOne = []
-for (let i = 0; i < doorsData.length; i+= 140) {
-    doorsMapTownOne.push(doorsData.slice(i, 140 + i))
+for (let i = 0; i < doors_townOne.length; i+= 140) {
+    doorsMapTownOne.push(doors_townOne.slice(i, 140 + i))
 }
 
 
@@ -108,6 +117,8 @@ doorsMapTownOne.forEach((row, i) => {
 
 
 
+// Sprites erstellen
+
 
 
 
@@ -118,6 +129,9 @@ const townOneBg = new Sprite({
     },
     image: townOneImgRaw
 })
+
+
+
 
 
 const player = new Sprite({
@@ -145,6 +159,20 @@ const fgTownOne = new Sprite({
     },
     image: fgTownOneImgRaw
 })
+
+
+
+
+const dabloonImg = new Sprite({
+    size: 0.6,
+    position: {
+        x: (canvas.width / 2) - 200,
+        y: canvas.height / 2
+    },
+    image: dabloonImgRaw,
+})
+
+
 
 
 const banner6x3 = new Sprite({
@@ -245,10 +273,9 @@ const bannerMessage = new BannerMessage({
 })
 
 
+// ende Sprites
 
-
-
-const movables = [townOneBg, fgTownOne, ...boundaries, ...doors]
+const movables = [townOneBg, fgTownOne, ...boundaries, ...doors]        // elemente die sich durch moving nicht mitbewegen
 
 
 
@@ -468,8 +495,11 @@ function render(currentScene) {
     test()
 
     if (currentScene === 0) {   // 0 - start
+        dabloonImg.draw()
+        console.log('draw s0');
 
     } else if (currentScene === 1){     // 1 - town one
+        console.log('draw s1');
         townOneBg.draw()
         player.draw()
         fgTownOne.draw()
@@ -698,7 +728,9 @@ function renderTiles() {
 
 
 function setCurrentScene(newScene) {
+    c.clearRect(0, 0, canvas.width, canvas.height)
     currentScene = newScene
+    return 'new Scene is Scene ' + newScene
 }
 
 
