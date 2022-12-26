@@ -7,6 +7,11 @@ canvas.style.opacity = 1
 
 
 
+function renderBg(color) {
+    c.fillStyle = color
+    c.fillRect(0, 0, canvas.width, canvas.height)
+}
+
 
 
 let currentScene = 0
@@ -120,7 +125,7 @@ doorsMapTownOne.forEach((row, i) => {
 // Sprites erstellen
 
 
-
+// scenes
 
 const townOneBg = new Sprite({
     position: {
@@ -132,7 +137,7 @@ const townOneBg = new Sprite({
 
 
 
-
+// player
 
 const player = new Sprite({
     position: {
@@ -163,16 +168,21 @@ const fgTownOne = new Sprite({
 
 
 
+// sonstiges
+
+
 const dabloonImg = new Sprite({
     size: 0.6,
     position: {
-        x: (canvas.width / 2) - 200,
-        y: canvas.height / 2
+        x: canvas.width / 2 - 250,
+        y: 40
     },
     image: dabloonImgRaw,
 })
 
 
+
+// banner
 
 
 const banner6x3 = new Sprite({
@@ -182,6 +192,10 @@ const banner6x3 = new Sprite({
     },
     image: banner6x3ImgRaw
 })
+
+
+
+
 
 const textBodyBannerMessageHeading = [
     new Writing({
@@ -273,6 +287,22 @@ const bannerMessage = new BannerMessage({
 })
 
 
+
+// scene zero
+
+const startTextInfo = new Writing({
+    text: 'Press "Space" to Start the game',
+    position: {
+        x: canvas.width / 2 - 200,
+        y: canvas.height - 40
+    }
+})
+
+
+
+
+
+
 // ende Sprites
 
 const movables = [townOneBg, fgTownOne, ...boundaries, ...doors]        // elemente die sich durch moving nicht mitbewegen
@@ -306,6 +336,9 @@ const keys = {
     l: {
         pressed: false
     },
+    space: {
+        pressed: false
+    }
 }
 
 let lastKey
@@ -345,7 +378,13 @@ window.addEventListener('keydown', (e) => {
         case 'l' :
             keys.l.pressed = true
             lastKey = 'l'
-            break      
+            break     
+            
+        case ' ' :
+            keys.space.pressed = true
+            lastKey = 'space'
+            break
+
     }
 })
 
@@ -381,7 +420,12 @@ window.addEventListener('keyup', (e) => {
         case 'l' :
             keys.l.pressed = false
             lastKey = 'l'
-            break   
+            break 
+            
+        case ' ' :
+            keys.space.pressed = false
+            lastKey = 'space'
+            break
     }
 })
 
@@ -416,6 +460,8 @@ let archievement = [
 
 
 
+
+
 // ----------------------------------------------------------------------------------------
 // ------------------------------       ENDE MIT INIT       -------------------------------
 // ----------------------------------------------------------------------------------------
@@ -431,6 +477,7 @@ let timeRunning = '0'
 function loop() {
     
     
+    
     now = Date.now()
     fps = Math.round(1000 / (now - before))
     
@@ -443,9 +490,6 @@ function loop() {
     
     render(currentScene)
     eventListening()
-    texting()
-
-    test()
     // console.log(secondsRunning + 'dt: ' + fps);
 
     if (fps > 99) {
@@ -466,6 +510,35 @@ loop();
 // ----------------------------------------------------------------------------------------
 // ------------------------------       FUNCTIONS       -----------------------------------
 // ----------------------------------------------------------------------------------------
+
+
+
+function render(currentScene) {
+
+    if (currentScene === 0) {   // 0 - start
+
+        renderBg('#F5B041')
+        dabloonImg.draw()
+        startTextInfo.write()        
+
+    } else if (currentScene === 1){     // 1 - town one
+        
+        townOneBg.draw()
+        player.draw()
+        fgTownOne.draw()
+
+    } else {
+
+        console.error('Scene: ' + currentScene + ' not found.');
+        setCurrentScene(0) // to start
+
+    }
+
+    if (bannerLoop === true) {
+        sendMessageBanner({index: bannerIndex, dauer: bannerDauer})
+    }
+}
+
 
 function setTimeRunning() {
     secondsRunning = Math.round(dt / 60)
@@ -490,36 +563,10 @@ function setDocumentTitle() {
     
 }
 
-function render(currentScene) {
-
-    test()
-
-    if (currentScene === 0) {   // 0 - start
-        dabloonImg.draw()
-        console.log('draw s0');
-
-    } else if (currentScene === 1){     // 1 - town one
-        console.log('draw s1');
-        townOneBg.draw()
-        player.draw()
-        fgTownOne.draw()
-    } else {
-        console.error('Scene: ' + currentScene + ' not found.');
-        setCurrentScene(0) // to start
-    }
-
-    if (bannerLoop === true) {
-        sendMessageBanner({index: bannerIndex, dauer: bannerDauer})
-    }
-}
 
 
-function test() {
-    
-}
 
-function texting() {
-}
+
 
 
 
@@ -527,7 +574,12 @@ function texting() {
 
 function eventListening() {
 
-    if (blendingOut === true) {
+    if (currentScene === 0 && keys.space.pressed) {
+        setCurrentScene(1)
+    }
+
+
+    if (blendingOut) {
         blendOut({blendSpeed: 0.05})
     }
     
