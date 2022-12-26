@@ -1,9 +1,9 @@
 class Door {
     static width = 24
     static height = 24
-    constructor({position, index}) {
-        this.width = Door.width
-        this.height = Door.height
+    constructor({position, index, pixel}) {
+        this.width = pixel.x
+        this.height = pixel.y
         this.position = position
         this.index = index
     }

@@ -84,16 +84,17 @@ playerImgRight.src = 'assets/Images/playerRight.png'
 // mapping collisions etc
 
 
+// town one
+
 const collisionsMapTownOne = []
-for (let i = 0; i < collisionsData.length; i+= 140) {
-    collisionsMapTownOne.push(collisionsData.slice(i, 140 + i))
+for (let i = 0; i < collisionsData_townOne.length; i+= 140) {
+    collisionsMapTownOne.push(collisionsData_townOne.slice(i, 140 + i))
 }
 
 const doorsMapTownOne = []
-for (let i = 0; i < doors_townOne.length; i+= 140) {
-    doorsMapTownOne.push(doors_townOne.slice(i, 140 + i))
+for (let i = 0; i < doorsData_townOne.length; i+= 140) {
+    doorsMapTownOne.push(doorsData_townOne.slice(i, 140 + i))
 }
-
 
 
 const boundaries = []
@@ -105,23 +106,16 @@ collisionsMapTownOne.forEach((row, i) => {
                     position: {
                         x: j * Boundary.width + offset.x ,  
                         y: i * Boundary.height + offset.y 
+                    }, 
+                    pixel: {
+                        x: 24,
+                        y: 24
                     }
                 })
             )
         }
     })
 })
-
-
-
-const doorsDestiny = [
-    NaN,
-    2,  // door index 1 destiny Scene 2
-    3,  // door 2
-    4,  // door 3
-
-]
-
 
 const doors = []
 doorsMapTownOne.forEach((row, i) => {
@@ -133,6 +127,10 @@ doorsMapTownOne.forEach((row, i) => {
                         x: j * Door.width + offset.x ,  
                         y: i * Door.height + offset.y 
                     },
+                    pixel: {
+                        x: 24,
+                        y: 24
+                    },
                     index: symbol
                 })
             )
@@ -142,9 +140,75 @@ doorsMapTownOne.forEach((row, i) => {
 
 
 
+// house one town one
+
+const collisionsMapHouseOne = []
+for (let i = 0; i < collisionsData_houseOne.length; i+= 38) {
+    collisionsMapHouseOne.push(collisionsData_houseOne.slice(i, 38 + i))
+}
+
+const doorsMapHouseOne = []
+for (let i = 0; i < doorsData_houseOne.length; i+= 38) {
+    doorsMapHouseOne.push(doorsData_houseOne.slice(i, 38 + i))
+}
+
+
+const boundariesHouseOne = []
+collisionsMapHouseOne.forEach((row, i) => {
+    row.forEach((symbol, j) => {
+        if (symbol === 1) {
+        boundariesHouseOne.push(
+                new Boundary({
+                    position: {
+                        x: j * Boundary.width,  
+                        y: i * Boundary.height
+                    },
+                    pixel: {
+                        x: 24,
+                        y: 24
+                    }
+                })
+            )
+        }
+    })
+})
+
+const doorsHouseOne = []
+doorsMapHouseOne.forEach((row, i) => {
+    row.forEach((symbol, j) => {
+        if (symbol === 1) {
+            doorsHouseOne.push(
+                new Door({
+                    position: {
+                        x: j * Door.width + offset.x ,  
+                        y: i * Door.height + offset.y 
+                    },
+                    pixel: {
+                        x: 32,
+                        y: 32
+                    },
+                    index: symbol
+                })
+            )
+        }
+    })
+})
+
+console.log(collisionsMapHouseOne);
 
 
 
+const doorsDestiny = [
+    NaN,
+    2,  // door index 1, destiny Scene 2, Map 1
+    3,  // d2 m1
+    4,  // d3 m1
+
+    1,  // d4 h1
+    1,  // d5 h2
+    1,  // d6 h3
+
+]
 
 // Sprites erstellen
 
@@ -175,18 +239,20 @@ const fgTownOne = new Sprite({
 
 const houseOne = new Sprite({
     position: {
-        x: -100,
-        y: -100
+        x: 0,
+        y: 0
     },
-    image: houseOneImgRaw
+    image: houseOneImgRaw,
+    size: 0.75
 })
 
 const fgHouseOne = new Sprite({
     position: {
-        x: -100,
-        y: -100
+        x: 0,
+        y: 0
     },
-    image: fgHouseOneImgRaw
+    image: fgHouseOneImgRaw,
+    size: 0.75
 })
 
 
@@ -353,7 +419,19 @@ const startTextInfo = new Writing({
 
 // ende Sprites
 
-const movables = [townOneBg, fgTownOne, ...boundaries, ...doors]        // elemente die sich durch moving nicht mitbewegen
+const movablesTownOne = [      // elemente die sich durch moving nicht mitbewegen
+    townOneBg, 
+    fgTownOne,
+    ...boundaries, 
+    ...doors
+]        
+
+const movablesHouseOne = [
+    houseOne,
+    fgHouseOne,
+    ...boundariesHouseOne,
+    ...doorsHouseOne
+]
 
 
 
@@ -548,9 +626,9 @@ function loop() {
 
     setTimeRunning()
     setDocumentTitle(currentScene)
-    
 
-    console.log(canvas.style.opacity);
+    //boundaries.forEach(boundary => {boundary.draw()})
+    boundariesHouseOne.forEach(boundary => {boundary.draw()})
 }
 loop();
 
@@ -565,30 +643,36 @@ loop();
 
 function render(currentScene) {
 
-    if (currentScene === 0) {   // 0 - start
+    switch (currentScene) {
 
-        renderBg('#F5B041')
-        dabloonImg.draw()
-        startTextInfo.write()        
+        case 0: // start
+            
+            renderBg('#F5B041')
+            dabloonImg.draw()
+            startTextInfo.write() 
+            break
 
-    } else if (currentScene === 1){     // 1 - town one
-        
-        townOneBg.draw()
-        player.draw()
-        fgTownOne.draw()
 
-    } else if (currentScene === 2){     // 2 - House one town One
-        
-        houseOne.draw()
-        player.draw()
-        fgHouseOne.draw()
+        case 1: // townOne
+            player.size = 0.75
+            townOneBg.draw()
+            player.draw()
+            fgTownOne.draw()
+            break
 
-    } else {
+        case 2: // houseOne
+            player.size = 1
+            houseOne.draw()
+            player.draw()
+            fgHouseOne.draw()
+            break
 
-        console.error('Scene: ' + currentScene + ' was not found. - On render');
-        setCurrentScene(0) // to start
-
+        default: 
+            console.error('Scene: ' + currentScene + ' was not found. - On render')
+            setCurrentScene(0)
     }
+
+
 
     if (bannerLoop === true) {
         sendMessageBanner({index: bannerIndex, dauer: bannerDauer})
@@ -695,217 +779,233 @@ function moving(currentScene) {
     let moving = true
     player.moving = false
 
+    
 
-    if (currentScene === 1) {
-        
-        if (keys.w.pressed && lastKey === 'w') {
-            player.moving = true
-            player.image = player.sprites.up
-    
-            for (let i = 0; i < boundaries.length; i++) {
-                const boundary = boundaries[i]
-                if (
-                    rectengularCollision({
-                        rectangle1: player,
-                        rectangle2: {
-                            ...boundary, 
-                            position: {
-                                x: boundary.position.x,
-                                y: boundary.position.y + playerStep
-                            }
-                        }
-                    })
-                ) {
-                    moving = false
-                    break
-                }
-            }
-    
-            if (moving) movables.forEach(movable => {movable.position.y += playerStep}) 
-        }    
-    
-    
-        
-        else if (keys.a.pressed && lastKey === 'a') {
-            player.moving = true
-            player.image = player.sprites.left
-    
-            for (let i = 0; i < boundaries.length; i++) {
-                const boundary = boundaries[i]
-                if (
-                    rectengularCollision({
-                        rectangle1: player,
-                        rectangle2: {...boundary, position: {
-                            x: boundary.position.x + playerStep,
-                            y: boundary.position.y 
-                        }}
-                    })
-                ) {
-                    moving = false
-                    break
-                }
-            }
-    
-            if (moving) movables.forEach(movable => {movable.position.x += playerStep})
-        }
-    
-    
-    
-        else if (keys.s.pressed && lastKey === 's') {
-            player.moving = true
-            player.image = player.sprites.down
-    
-            for (let i = 0; i < boundaries.length; i++) {
-                const boundary = boundaries[i]
-                if (
-                    rectengularCollision({
-                        rectangle1: player,
-                        rectangle2: {...boundary, position: {
-                            x: boundary.position.x,
-                            y: boundary.position.y - playerStep
-                        }}
-                    })
-                ) {
-                    moving = false
-                    break
-                }
-            }
-    
-            if (moving) movables.forEach(movable => {movable.position.y -= playerStep})
-        }
-    
-    
-    
-        else if (keys.d.pressed && lastKey === 'd') {
-            player.moving = true
-            player.image = player.sprites.right
-    
-            for (let i = 0; i < boundaries.length; i++) {
-                const boundary = boundaries[i]
-                if (
-                    rectengularCollision({
-                        rectangle1: player,
-                        rectangle2: {...boundary, position: {
-                            x: boundary.position.x - playerStep,
-                            y: boundary.position.y 
-                        }}
-                    })
-                ) {
-                    moving = false
-                    break
-                }
-            }
-    
-            if (moving) movables.forEach(movable => {movable.position.x -= playerStep})
-        }
+    switch (currentScene) {
 
-    } else if (currentScene === 2) {
-        
-        if (keys.w.pressed && lastKey === 'w') {
-            player.moving = true
-            player.image = player.sprites.up
-    
-            for (let i = 0; i < boundaries.length; i++) {
-                const boundary = boundaries[i]
-                if (
-                    rectengularCollision({
-                        rectangle1: player,
-                        rectangle2: {
-                            ...boundary, 
-                            position: {
-                                x: boundary.position.x,
-                                y: boundary.position.y + playerStep
+        case 1:
+
+            if (keys.w.pressed && lastKey === 'w') {
+                player.moving = true
+                player.image = player.sprites.up
+
+                for (let i = 0; i < boundaries.length; i++) {
+                    const boundary = boundaries[i]
+                    if (
+                        rectengularCollision({
+                            rectangle1: player,
+                            rectangle2: {
+                                ...boundary, 
+                                position: {
+                                    x: boundary.position.x,
+                                    y: boundary.position.y + playerStep
+                                }
                             }
-                        }
-                    })
-                ) {
-                    moving = false
-                    break
+                        })
+                    ) {
+                        moving = false
+                        break
+                    }
                 }
-            }
-    
-            if (moving) movables.forEach(movable => {movable.position.y += playerStep}) 
-        }    
-    
-    
         
-        else if (keys.a.pressed && lastKey === 'a') {
-            player.moving = true
-            player.image = player.sprites.left
-    
-            for (let i = 0; i < boundaries.length; i++) {
-                const boundary = boundaries[i]
-                if (
-                    rectengularCollision({
-                        rectangle1: player,
-                        rectangle2: {...boundary, position: {
-                            x: boundary.position.x + playerStep,
-                            y: boundary.position.y 
-                        }}
-                    })
-                ) {
-                    moving = false
-                    break
+                if (moving) movablesTownOne.forEach(movable => {movable.position.y += playerStep}) 
+            }    
+        
+        
+            
+            else if (keys.a.pressed && lastKey === 'a') {
+                player.moving = true
+                player.image = player.sprites.left
+        
+                for (let i = 0; i < boundaries.length; i++) {
+                    const boundary = boundaries[i]
+                    if (
+                        rectengularCollision({
+                            rectangle1: player,
+                            rectangle2: {...boundary, position: {
+                                x: boundary.position.x + playerStep,
+                                y: boundary.position.y 
+                            }}
+                        })
+                    ) {
+                        moving = false
+                        break
+                    }
                 }
+        
+                if (moving) movablesTownOne.forEach(movable => {movable.position.x += playerStep})
+            }
+        
+        
+        
+            else if (keys.s.pressed && lastKey === 's') {
+                player.moving = true
+                player.image = player.sprites.down
+        
+                for (let i = 0; i < boundaries.length; i++) {
+                    const boundary = boundaries[i]
+                    if (
+                        rectengularCollision({
+                            rectangle1: player,
+                            rectangle2: {...boundary, position: {
+                                x: boundary.position.x,
+                                y: boundary.position.y - playerStep
+                            }}
+                        })
+                    ) {
+                        moving = false
+                        break
+                    }
+                }
+        
+                if (moving) movablesTownOne.forEach(movable => {movable.position.y -= playerStep})
+            }
+        
+        
+        
+            else if (keys.d.pressed && lastKey === 'd') {
+                player.moving = true
+                player.image = player.sprites.right
+        
+                for (let i = 0; i < boundaries.length; i++) {
+                    const boundary = boundaries[i]
+                    if (
+                        rectengularCollision({
+                            rectangle1: player,
+                            rectangle2: {...boundary, position: {
+                                x: boundary.position.x - playerStep,
+                                y: boundary.position.y 
+                            }}
+                        })
+                    ) {
+                        moving = false
+                        break
+                    }
+                }
+        
+                if (moving) movablesTownOne.forEach(movable => {movable.position.x -= playerStep})
             }
     
-            if (moving) movables.forEach(movable => {movable.position.x += playerStep})
-        }
-    
-    
-    
-        else if (keys.s.pressed && lastKey === 's') {
-            player.moving = true
-            player.image = player.sprites.down
-    
-            for (let i = 0; i < boundaries.length; i++) {
-                const boundary = boundaries[i]
-                if (
-                    rectengularCollision({
-                        rectangle1: player,
-                        rectangle2: {...boundary, position: {
-                            x: boundary.position.x,
-                            y: boundary.position.y - playerStep
-                        }}
-                    })
-                ) {
-                    moving = false
-                    break
+
+
+
+
+
+
+
+
+
+
+
+        case 2:
+            
+            if (keys.w.pressed && lastKey === 'w') {
+                player.moving = true
+                player.image = player.sprites.up
+        
+                for (let i = 0; i < boundariesHouseOne.length; i++) {
+                    const boundary = boundariesHouseOne[i]
+                    if (
+                        rectengularCollision({
+                            rectangle1: player,
+                            rectangle2: {
+                                ...boundary, 
+                                position: {
+                                    x: boundary.position.x,
+                                    y: boundary.position.y + playerStep
+                                }
+                            }
+                        })
+                    ) {
+                        moving = false
+                        break
+                    }
                 }
-            }
-    
-            if (moving) movables.forEach(movable => {movable.position.y -= playerStep})
-        }
-    
-    
-    
-        else if (keys.d.pressed && lastKey === 'd') {
-            player.moving = true
-            player.image = player.sprites.right
-    
-            for (let i = 0; i < boundaries.length; i++) {
-                const boundary = boundaries[i]
-                if (
-                    rectengularCollision({
-                        rectangle1: player,
-                        rectangle2: {...boundary, position: {
-                            x: boundary.position.x - playerStep,
-                            y: boundary.position.y 
-                        }}
-                    })
-                ) {
-                    moving = false
-                    break
+        
+                if (moving) movablesHouseOne.forEach(movable => {movable.position.y += playerStep}) 
+            }    
+        
+        
+            
+            else if (keys.a.pressed && lastKey === 'a') {
+                player.moving = true
+                player.image = player.sprites.left
+        
+                for (let i = 0; i < boundariesHouseOne.length; i++) {
+                    const boundary = boundariesHouseOne[i]
+                    if (
+                        rectengularCollision({
+                            rectangle1: player,
+                            rectangle2: {...boundary, position: {
+                                x: boundary.position.x + playerStep,
+                                y: boundary.position.y 
+                            }}
+                        })
+                    ) {
+                        moving = false
+                        break
+                    }
                 }
+        
+                if (moving) movablesHouseOne.forEach(movable => {movable.position.x += playerStep})
             }
-    
-            if (moving) movables.forEach(movable => {movable.position.x -= playerStep})
-        }
+        
+        
+        
+            else if (keys.s.pressed && lastKey === 's') {
+                player.moving = true
+                player.image = player.sprites.down
+        
+                for (let i = 0; i < boundariesHouseOne.length; i++) {
+                    const boundary = boundariesHouseOne[i]
+                    if (
+                        rectengularCollision({
+                            rectangle1: player,
+                            rectangle2: {...boundary, position: {
+                                x: boundary.position.x,
+                                y: boundary.position.y - playerStep
+                            }}
+                        })
+                    ) {
+                        moving = false
+                        break
+                    }
+                }
+        
+                if (moving) movablesHouseOne.forEach(movable => {movable.position.y -= playerStep})
+            }
+        
+        
+        
+            else if (keys.d.pressed && lastKey === 'd') {
+                player.moving = true
+                player.image = player.sprites.right
+        
+                for (let i = 0; i < boundariesHouseOne.length; i++) {
+                    const boundary = boundariesHouseOne[i]
+                    if (
+                        rectengularCollision({
+                            rectangle1: player,
+                            rectangle2: {...boundary, position: {
+                                x: boundary.position.x - playerStep,
+                                y: boundary.position.y 
+                            }}
+                        })
+                    ) {
+                        moving = false
+                        break
+                    }
+                }
+        
+                if (moving) movablesHouseOne.forEach(movable => {movable.position.x -= playerStep})
+            }
+
+
+
+        default:
+            break
 
     }
-
-    
-
 }
 
 
@@ -939,14 +1039,35 @@ function rectengularCollision({rectangle1, rectangle2}) {
 
 
 
-function renderTiles() {
-    boundaries.forEach(boundary => {
-        boundary.draw()
-    })   
+function renderTiles(currentScene) {
 
-    doors.forEach(door => {
-        door.draw()
-    })
+
+    switch (currentScene) {
+        case 1: 
+            boundaries.forEach(boundary => {
+                boundary.draw()
+            })   
+
+            doors.forEach(door => {
+                door.draw()
+            })
+            break
+
+        case 2:
+            boundariesHouseOne.forEach(boundary => {
+                boundary.draw()
+            })   
+
+            doorsHouseOne.forEach(door => {
+                door.draw()
+            })
+            break
+        
+        
+
+        
+
+    }    
 }
 
 
@@ -955,7 +1076,7 @@ function renderTiles() {
 function setCurrentScene(newScene) {
     c.clearRect(0, 0, canvas.width, canvas.height)
     currentScene = newScene
-    return 'new Scene is Scene ' + newScene
+    return 'new Scene is Scene: ' + newScene
 }
 
 
