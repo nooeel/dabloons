@@ -15,11 +15,13 @@ function renderBg(color) {
 
 
 let currentScene = 0
+let nextScene = NaN
 
 
 let dt = 0
+
 let blendingOut = false
-let loading = false
+let blendedOut = false
 
 canvas.width = 1024
 canvas.height = 576
@@ -101,6 +103,16 @@ collisionsMapTownOne.forEach((row, i) => {
 })
 
 
+
+const doorsDestiny = [
+    NaN,
+    2,  // door index 1 destiny Scene 2
+    3,  // door 2
+    4,  // door 3
+
+]
+
+
 const doors = []
 doorsMapTownOne.forEach((row, i) => {
     row.forEach((symbol, j) => {
@@ -117,6 +129,8 @@ doorsMapTownOne.forEach((row, i) => {
         }
     })
 })
+
+
 
 
 
@@ -543,7 +557,6 @@ function render(currentScene) {
 function setTimeRunning() {
     secondsRunning = Math.round(dt / 60)
 
-
     minutesRunning = Math.floor(secondsRunning / 60)
 
     if (secondsRunning%60 < 10) {
@@ -551,16 +564,13 @@ function setTimeRunning() {
     } else {
         timeRunning = minutesRunning + ':' + secondsRunning % 60 + 'min'
     }
-    
-
 }
 
 function setDocumentTitle() {
     document.title = 
-        'Dabloons ' + 
+        'Dabl00ns ' + 
         fps + 'FPS ' + 
         timeRunning
-    
 }
 
 
@@ -581,9 +591,10 @@ function eventListening() {
 
     if (blendingOut) {
         blendOut({blendSpeed: 0.05})
+    } else if (blendedOut) {
+        setCurrentScene(nextScene)
     }
-    
-    
+
 
     if (keys.w.pressed || keys.a.pressed || keys.s.pressed || keys.d.pressed) {
         for (let i = 0; i < doors.length; i++) {
@@ -606,11 +617,15 @@ function eventListening() {
         }
     }
 
-    if (keys.e.pressed && onDoor != 0) {
-        console.log("door " + onDoor);
+    if (keys.e.pressed && onDoor != 0 && blendingOut != true) {
+        nextScene = doorsDestiny[onDoor]
+        //console.log('next scene:' + nextScene + ' , door index: ' + onDoor);
         blendingOut = true
-
     }
+
+
+
+    // archievements
 
     if (onDoor != 0 && archievement[1] === false) {
         sendMessageBanner({index: 1, dauer: 10})
@@ -744,7 +759,8 @@ function blendOut({blendSpeed}) {
     if (canvas.style.opacity != 0) {
         canvas.style.opacity -= blendSpeed
     } else {
-        loading = true
+        blendingOut = false
+        blendedOut = true
     }
     //console.log(dt + 'dt: ' + canvas.style.opacity);
 
