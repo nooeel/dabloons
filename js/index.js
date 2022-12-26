@@ -7,10 +7,7 @@ canvas.style.opacity = 1
 
 
 
-function renderBg(color) {
-    c.fillStyle = color
-    c.fillRect(0, 0, canvas.width, canvas.height)
-}
+
 
 
 
@@ -20,8 +17,8 @@ let nextScene = NaN
 
 let dt = 0
 
-let blendingOut = false
-let blendedOut = false
+// let blendingOut = false
+// let blendedOut = false
 
 canvas.width = 1024
 canvas.height = 576
@@ -36,12 +33,25 @@ const offset = {
 }
 
 
+// lade bilder
+
+// town one
 
 const townOneImgRaw = new Image()
 townOneImgRaw.src = 'assets/Images/townOne.png'
 
 const fgTownOneImgRaw = new Image()
 fgTownOneImgRaw.src = 'assets/Images/fgTownOne.png'
+
+
+// house one
+
+const houseOneImgRaw = new Image() 
+houseOneImgRaw.src = 'assets/Images/houseOne.png'
+
+const fgHouseOneImgRaw = new Image() 
+fgHouseOneImgRaw.src = 'assets/Images/fgHouseOne.png'
+
 
 
 
@@ -141,12 +151,42 @@ doorsMapTownOne.forEach((row, i) => {
 
 // scenes
 
+
+// town one
+
 const townOneBg = new Sprite({
     position: {
         x: offset.x,
         y: offset.y
     },
     image: townOneImgRaw
+})
+
+const fgTownOne = new Sprite({
+    position: {
+        x: offset.x,
+        y: offset.y
+    },
+    image: fgTownOneImgRaw
+})
+
+
+// house one town one
+
+const houseOne = new Sprite({
+    position: {
+        x: -100,
+        y: -100
+    },
+    image: houseOneImgRaw
+})
+
+const fgHouseOne = new Sprite({
+    position: {
+        x: -100,
+        y: -100
+    },
+    image: fgHouseOneImgRaw
 })
 
 
@@ -171,13 +211,7 @@ const player = new Sprite({
     size: 0.75
 })
 
-const fgTownOne = new Sprite({
-    position: {
-        x: offset.x,
-        y: offset.y
-    },
-    image: fgTownOneImgRaw
-})
+
 
 
 
@@ -249,7 +283,7 @@ const textBodyBannerMessageHeading = [
 
 const textBodyBannerMessage = [
     new Writing({
-        text: 'nan',
+        text: NaN,
         position: {
             x: 100,
             y: 100
@@ -503,7 +537,7 @@ function loop() {
     
     
     render(currentScene)
-    eventListening()
+    eventListening(currentScene)
     // console.log(secondsRunning + 'dt: ' + fps);
 
     if (fps > 99) {
@@ -513,8 +547,10 @@ function loop() {
     before = now
 
     setTimeRunning()
-    setDocumentTitle()
+    setDocumentTitle(currentScene)
     
+
+    console.log(canvas.style.opacity);
 }
 loop();
 
@@ -541,9 +577,15 @@ function render(currentScene) {
         player.draw()
         fgTownOne.draw()
 
+    } else if (currentScene === 2){     // 2 - House one town One
+        
+        houseOne.draw()
+        player.draw()
+        fgHouseOne.draw()
+
     } else {
 
-        console.error('Scene: ' + currentScene + ' not found.');
+        console.error('Scene: ' + currentScene + ' was not found. - On render');
         setCurrentScene(0) // to start
 
     }
@@ -551,6 +593,12 @@ function render(currentScene) {
     if (bannerLoop === true) {
         sendMessageBanner({index: bannerIndex, dauer: bannerDauer})
     }
+}
+
+
+function renderBg(color) {
+    c.fillStyle = color
+    c.fillRect(0, 0, canvas.width, canvas.height)
 }
 
 
@@ -566,11 +614,12 @@ function setTimeRunning() {
     }
 }
 
-function setDocumentTitle() {
+function setDocumentTitle(currentScene) {
     document.title = 
         'Dabl00ns ' + 
         fps + 'FPS ' + 
-        timeRunning
+        timeRunning +
+        ' Scn: ' + currentScene
 }
 
 
@@ -582,18 +631,20 @@ function setDocumentTitle() {
 
 
 
-function eventListening() {
+function eventListening(currentScene) {
 
     if (currentScene === 0 && keys.space.pressed) {
         setCurrentScene(1)
     }
 
 
-    if (blendingOut) {
-        blendOut({blendSpeed: 0.05})
-    } else if (blendedOut) {
-        setCurrentScene(nextScene)
-    }
+    // if (blendingOut) {
+    //     blendOut({blendSpeed: 0.05})
+    // } else if (blendedOut) {
+    //     canvas.style.opacity = '1.0'
+    //     setCurrentScene(nextScene)
+        
+    // }
 
 
     if (keys.w.pressed || keys.a.pressed || keys.s.pressed || keys.d.pressed) {
@@ -617,11 +668,8 @@ function eventListening() {
         }
     }
 
-    if (keys.e.pressed && onDoor != 0 && blendingOut != true) {
-        nextScene = doorsDestiny[onDoor]
-        //console.log('next scene:' + nextScene + ' , door index: ' + onDoor);
-        blendingOut = true
-    }
+    if (keys.e.pressed && onDoor != 0) setCurrentScene(doorsDestiny[onDoor])
+    
 
 
 
@@ -635,12 +683,12 @@ function eventListening() {
 
     
 
-    moving()
+    moving(currentScene)
 }
 
 
 
-function moving() {
+function moving(currentScene) {
 
 
     const playerStep = 3
@@ -648,124 +696,233 @@ function moving() {
     player.moving = false
 
 
-    if (keys.w.pressed && lastKey === 'w') {
-        player.moving = true
-        player.image = player.sprites.up
-
-        for (let i = 0; i < boundaries.length; i++) {
-            const boundary = boundaries[i]
-            if (
-                rectengularCollision({
-                    rectangle1: player,
-                    rectangle2: {
-                        ...boundary, 
-                        position: {
-                            x: boundary.position.x,
-                            y: boundary.position.y + playerStep
+    if (currentScene === 1) {
+        
+        if (keys.w.pressed && lastKey === 'w') {
+            player.moving = true
+            player.image = player.sprites.up
+    
+            for (let i = 0; i < boundaries.length; i++) {
+                const boundary = boundaries[i]
+                if (
+                    rectengularCollision({
+                        rectangle1: player,
+                        rectangle2: {
+                            ...boundary, 
+                            position: {
+                                x: boundary.position.x,
+                                y: boundary.position.y + playerStep
+                            }
                         }
-                    }
-                })
-            ) {
-                moving = false
-                break
+                    })
+                ) {
+                    moving = false
+                    break
+                }
             }
+    
+            if (moving) movables.forEach(movable => {movable.position.y += playerStep}) 
+        }    
+    
+    
+        
+        else if (keys.a.pressed && lastKey === 'a') {
+            player.moving = true
+            player.image = player.sprites.left
+    
+            for (let i = 0; i < boundaries.length; i++) {
+                const boundary = boundaries[i]
+                if (
+                    rectengularCollision({
+                        rectangle1: player,
+                        rectangle2: {...boundary, position: {
+                            x: boundary.position.x + playerStep,
+                            y: boundary.position.y 
+                        }}
+                    })
+                ) {
+                    moving = false
+                    break
+                }
+            }
+    
+            if (moving) movables.forEach(movable => {movable.position.x += playerStep})
+        }
+    
+    
+    
+        else if (keys.s.pressed && lastKey === 's') {
+            player.moving = true
+            player.image = player.sprites.down
+    
+            for (let i = 0; i < boundaries.length; i++) {
+                const boundary = boundaries[i]
+                if (
+                    rectengularCollision({
+                        rectangle1: player,
+                        rectangle2: {...boundary, position: {
+                            x: boundary.position.x,
+                            y: boundary.position.y - playerStep
+                        }}
+                    })
+                ) {
+                    moving = false
+                    break
+                }
+            }
+    
+            if (moving) movables.forEach(movable => {movable.position.y -= playerStep})
+        }
+    
+    
+    
+        else if (keys.d.pressed && lastKey === 'd') {
+            player.moving = true
+            player.image = player.sprites.right
+    
+            for (let i = 0; i < boundaries.length; i++) {
+                const boundary = boundaries[i]
+                if (
+                    rectengularCollision({
+                        rectangle1: player,
+                        rectangle2: {...boundary, position: {
+                            x: boundary.position.x - playerStep,
+                            y: boundary.position.y 
+                        }}
+                    })
+                ) {
+                    moving = false
+                    break
+                }
+            }
+    
+            if (moving) movables.forEach(movable => {movable.position.x -= playerStep})
         }
 
-        if (moving) movables.forEach(movable => {movable.position.y += playerStep}) 
-    }    
+    } else if (currentScene === 2) {
+        
+        if (keys.w.pressed && lastKey === 'w') {
+            player.moving = true
+            player.image = player.sprites.up
+    
+            for (let i = 0; i < boundaries.length; i++) {
+                const boundary = boundaries[i]
+                if (
+                    rectengularCollision({
+                        rectangle1: player,
+                        rectangle2: {
+                            ...boundary, 
+                            position: {
+                                x: boundary.position.x,
+                                y: boundary.position.y + playerStep
+                            }
+                        }
+                    })
+                ) {
+                    moving = false
+                    break
+                }
+            }
+    
+            if (moving) movables.forEach(movable => {movable.position.y += playerStep}) 
+        }    
+    
+    
+        
+        else if (keys.a.pressed && lastKey === 'a') {
+            player.moving = true
+            player.image = player.sprites.left
+    
+            for (let i = 0; i < boundaries.length; i++) {
+                const boundary = boundaries[i]
+                if (
+                    rectengularCollision({
+                        rectangle1: player,
+                        rectangle2: {...boundary, position: {
+                            x: boundary.position.x + playerStep,
+                            y: boundary.position.y 
+                        }}
+                    })
+                ) {
+                    moving = false
+                    break
+                }
+            }
+    
+            if (moving) movables.forEach(movable => {movable.position.x += playerStep})
+        }
+    
+    
+    
+        else if (keys.s.pressed && lastKey === 's') {
+            player.moving = true
+            player.image = player.sprites.down
+    
+            for (let i = 0; i < boundaries.length; i++) {
+                const boundary = boundaries[i]
+                if (
+                    rectengularCollision({
+                        rectangle1: player,
+                        rectangle2: {...boundary, position: {
+                            x: boundary.position.x,
+                            y: boundary.position.y - playerStep
+                        }}
+                    })
+                ) {
+                    moving = false
+                    break
+                }
+            }
+    
+            if (moving) movables.forEach(movable => {movable.position.y -= playerStep})
+        }
+    
+    
+    
+        else if (keys.d.pressed && lastKey === 'd') {
+            player.moving = true
+            player.image = player.sprites.right
+    
+            for (let i = 0; i < boundaries.length; i++) {
+                const boundary = boundaries[i]
+                if (
+                    rectengularCollision({
+                        rectangle1: player,
+                        rectangle2: {...boundary, position: {
+                            x: boundary.position.x - playerStep,
+                            y: boundary.position.y 
+                        }}
+                    })
+                ) {
+                    moving = false
+                    break
+                }
+            }
+    
+            if (moving) movables.forEach(movable => {movable.position.x -= playerStep})
+        }
 
+    }
 
     
-    else if (keys.a.pressed && lastKey === 'a') {
-        player.moving = true
-        player.image = player.sprites.left
-
-        for (let i = 0; i < boundaries.length; i++) {
-            const boundary = boundaries[i]
-            if (
-                rectengularCollision({
-                    rectangle1: player,
-                    rectangle2: {...boundary, position: {
-                        x: boundary.position.x + playerStep,
-                        y: boundary.position.y 
-                    }}
-                })
-            ) {
-                moving = false
-                break
-            }
-        }
-
-        if (moving) movables.forEach(movable => {movable.position.x += playerStep})
-    }
-
-
-
-    else if (keys.s.pressed && lastKey === 's') {
-        player.moving = true
-        player.image = player.sprites.down
-
-        for (let i = 0; i < boundaries.length; i++) {
-            const boundary = boundaries[i]
-            if (
-                rectengularCollision({
-                    rectangle1: player,
-                    rectangle2: {...boundary, position: {
-                        x: boundary.position.x,
-                        y: boundary.position.y - playerStep
-                    }}
-                })
-            ) {
-                moving = false
-                break
-            }
-        }
-
-        if (moving) movables.forEach(movable => {movable.position.y -= playerStep})
-    }
-
-
-
-    else if (keys.d.pressed && lastKey === 'd') {
-        player.moving = true
-        player.image = player.sprites.right
-
-        for (let i = 0; i < boundaries.length; i++) {
-            const boundary = boundaries[i]
-            if (
-                rectengularCollision({
-                    rectangle1: player,
-                    rectangle2: {...boundary, position: {
-                        x: boundary.position.x - playerStep,
-                        y: boundary.position.y 
-                    }}
-                })
-            ) {
-                moving = false
-                break
-            }
-        }
-
-        if (moving) movables.forEach(movable => {movable.position.x -= playerStep})
-    }
 
 }
 
 
 
 
-function blendOut({blendSpeed}) {
+// function blendOut({blendSpeed}) {
 
-    if (canvas.style.opacity != 0) {
-        canvas.style.opacity -= blendSpeed
-    } else {
-        blendingOut = false
-        blendedOut = true
-    }
-    //console.log(dt + 'dt: ' + canvas.style.opacity);
+//     if (canvas.style.opacity != 0) {
+//         canvas.style.opacity -= blendSpeed
+//     } else {
+//         blendingOut = false
+//         blendedOut = true
+//     }
+//     //console.log(dt + 'dt: ' + canvas.style.opacity);
 
     
-}
+// }
 
 
 function rectengularCollision({rectangle1, rectangle2}) {
