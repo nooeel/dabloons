@@ -5,8 +5,8 @@
  </editorsettings>
  <tileset firstgid="1" source="collision.tsx"/>
  <tileset firstgid="3" source="ascii.tsx"/>
- <imagelayer id="2" name="house" offsetx="64" offsety="64">
-  <image source="../Images/HouseOne.png" width="1216" height="1280"/>
+ <imagelayer id="2" name="house">
+  <image source="../Images/HouseOne.png" width="1344" height="1408"/>
  </imagelayer>
  <layer id="1" name="boundary" width="42" height="44">
   <data encoding="csv">

@@ -11,7 +11,7 @@ canvas.style.opacity = 1
 
 
 
-let currentScene = 2
+let currentScene = 3
 let nextScene = NaN
 
 let teleported = 0
@@ -38,6 +38,11 @@ const offsetHouseOne = {
     y: -400
 }
 
+const offsetHouseTwo = {
+    x: 100,
+    y: -450
+}
+
 
 // lade bilder
 
@@ -57,6 +62,15 @@ houseOneImgRaw.src = 'assets/Images/houseOne.png'
 
 const fgHouseOneImgRaw = new Image() 
 fgHouseOneImgRaw.src = 'assets/Images/fgHouseOne.png'
+
+
+// house two
+
+const houseTwoImgRaw = new Image()
+houseTwoImgRaw.src = 'assets/Images/houseTwo.png'
+
+const fgHouseTwoImgRaw = new Image()
+fgHouseTwoImgRaw.src = 'assets/Images/fgHouseTwo.png'
 
 
 
@@ -202,22 +216,62 @@ doorsMapHouseOne.forEach((row, i) => {
 
 
 
-const doorsDestiny = [
-    NaN,
-    2,  // door index 1, destiny Scene 2, Map 1
-    3,  // d2 m1
-    4,  // d3 m1
+// house two town one - toms café
 
-    1,  // d4 h1
-    1,  // d5 h2
-    1,  // d6 h3
+const collisionsMapHouseTwo = []
+for (let i = 0; i < collisionsData_houseTwo.length; i+= 80) {
+    collisionsMapHouseTwo.push(collisionsData_houseTwo.slice(i, 80 + i))
+}
 
-]
+const doorsMapHouseTwo = []
+for (let i = 0; i < usablesData_houseTwo.length; i+= 80) {
+    doorsMapHouseTwo.push(usablesData_houseTwo.slice(i, 80 + i))
+}
 
-const doorsDestinyHouseOne = [
-    NaN,
-    1,  // d1 h1
-]
+
+const boundariesHouseTwo = []
+collisionsMapHouseTwo.forEach((row, i) => {
+    row.forEach((symbol, j) => {
+        if (symbol === 1) {
+        boundariesHouseTwo.push(
+                new Boundary({
+                    position: {
+                        x: j * Boundary.width + offsetHouseTwo.x,  
+                        y: i * Boundary.height + offsetHouseTwo.y
+                    },
+                    pixel: {
+                        x: 24,
+                        y: 24
+                    }
+                })
+            )
+        }
+    })
+})
+
+const doorsHouseTwo = []
+doorsMapHouseTwo.forEach((row, i) => {
+    row.forEach((symbol, j) => {
+        if (symbol === 1) {
+            doorsHouseTwo.push(
+                new Door({
+                    position: {
+                        x: j * Door.width + offsetHouseTwo.x,  
+                        y: i * Door.height + offsetHouseTwo.y
+                    },
+                    pixel: {
+                        x: 24,
+                        y: 24
+                    },
+                    index: 1
+                })
+            )
+        }
+    })
+})
+
+
+
 
 // Sprites erstellen
 
@@ -261,6 +315,27 @@ const fgHouseOne = new Sprite({
         y: offsetHouseOne.y
     },
     image: fgHouseOneImgRaw,
+    size: 0.75
+})
+
+
+// house two town one - toms café
+
+const houseTwo = new Sprite({
+    position: {
+        x: offsetHouseTwo.x,
+        y: offsetHouseTwo.y
+    },
+    image: houseTwoImgRaw,
+    size: 0.75
+})
+
+const fgHouseTwo = new Sprite({
+    position: {
+        x: offsetHouseTwo.x,
+        y: offsetHouseTwo.y
+    },
+    image: fgHouseTwoImgRaw,
     size: 0.75
 })
 
@@ -424,28 +499,13 @@ const startTextInfo = new Writing({
 
 
 
-
-
 // ende Sprites
 
-const movablesTownOne = [      // elemente die sich durch moving nicht mitbewegen
-    townOneBg, 
-    fgTownOne,
-    ...boundaries, 
-    ...doors
-]        
-
-const movablesHouseOne = [
-    houseOne,
-    fgHouseOne,
-    ...boundariesHouseOne,
-    ...doorsHouseOne
-]
 
 
 
-let onDoor = 0
-let onDoorHouseOne = 0
+
+
 
 
 // keyListener
@@ -582,7 +642,42 @@ let dtInFadeBannerMsg = 0
 const msgBannerSpeed = 4.5
 const bannerPosX = 20
 
+let now
+let before
 
+let secondsRunning = 0
+let minutesRunning = 0
+let timeRunning = '0'
+
+
+let onDoor = 0
+let onDoorHouseOne = 0
+let onDoorHouseTwo = 0
+
+
+
+// lists
+
+const movablesTownOne = [      // elemente die sich durch moving nicht mitbewegen
+    townOneBg, 
+    fgTownOne,
+    ...boundaries, 
+    ...doors
+]        
+
+const movablesHouseOne = [
+    houseOne,
+    fgHouseOne,
+    ...boundariesHouseOne,
+    ...doorsHouseOne
+]
+
+const movablesHouseTwo = [
+    houseTwo,
+    fgHouseTwo,
+    ...boundariesHouseTwo,
+    ...doorsHouseTwo
+]
 
 let archievement = [
     false, 
@@ -590,24 +685,28 @@ let archievement = [
 ]
 
 
+const doorsDestiny = [
+    NaN,
+    2,  // => destiny Scene, // door index 1, Map 1
+    3,  // d2 m1
+    4  // d3 m1
+]
 
+const doorsDestinyHouseOne = [
+    NaN,
+    1,  // d1
+]
 
-
-
-
-
-
+const doorsDestinyHouseTwo = [
+    NaN,
+    1,  // d1
+]
 
 // ----------------------------------------------------------------------------------------
 // ------------------------------       ENDE MIT INIT       -------------------------------
 // ----------------------------------------------------------------------------------------
 
-let now
-let before
 
-let secondsRunning = 0
-let minutesRunning = 0
-let timeRunning = '0'
 
 
 function loop() {
@@ -650,6 +749,9 @@ function loop() {
     // doorsHouseOne.forEach(door => {door.draw()})
     // boundariesHouseOne.forEach(boundary => {boundary.draw()})
 
+    // doorsHouseTwo.forEach(door => {door.draw()})
+    // boundariesHouseTwo.forEach(boundary => {boundary.draw()})
+
     // console.log('onDoor: ' + onDoor +' - onDoorHouseOne: ' + onDoorHouseOne);
 }
 loop();
@@ -689,6 +791,14 @@ function render(currentScene) {
             player.draw()
             fgHouseOne.draw()
             break
+
+        case 3: // houseTwo - Toms Café
+            player.size = 1
+            houseTwo.draw()
+            player.draw()
+            fgHouseTwo.draw()
+            break
+
 
         default: 
             console.error('Scene: ' + currentScene + ' was not found. - On render')
@@ -796,6 +906,26 @@ function eventListening(currentScene) {
         }
     }
 
+    if (currentScene === 3 && (keys.w.pressed || keys.a.pressed || keys.s.pressed || keys.d.pressed)) {
+        for (let i = 0; i < doorsHouseTwo.length; i++) {
+            const doorHouseTwo = doorsHouseTwo[i]
+            if (
+                rectengularCollision({
+                    rectangle1: player,
+                    rectangle2: {
+                        ...doorHouseTwo,
+                        position: {
+                            x: doorHouseTwo.position.x,
+                            y: doorHouseTwo.position.y 
+                        }
+                    }
+                })
+            ) {
+                onDoorHouseTwo = doorHouseTwo.index
+            }
+        }
+    }
+
     switch (currentScene) {
         case 1:
             if (keys.e.pressed && onDoor!= 0 && teleported === 0) {
@@ -812,6 +942,13 @@ function eventListening(currentScene) {
                 teleported = 20
             }
             break
+
+        case 3:
+            if (keys.e.pressed && onDoorHouseTwo != 0 && teleported === 0) {
+                setCurrentScene(doorsDestinyHouseTwo[onDoorHouseTwo])
+                teleported = 20
+                break
+            }
     
         default:
             break;
@@ -875,6 +1012,7 @@ function moving(currentScene) {
         
                 if (moving) movablesTownOne.forEach(movable => {movable.position.y += playerStep}) 
                 if (moving) movablesHouseOne.forEach(movable => {movable.position.y -= playerStep}) 
+                if (moving) movablesHouseTwo.forEach(movable => {movable.position.y -= playerStep}) 
             }    
         
         
@@ -927,6 +1065,7 @@ function moving(currentScene) {
         
                 if (moving) movablesTownOne.forEach(movable => {movable.position.y -= playerStep})
                 if (moving) movablesHouseOne.forEach(movable => {movable.position.y += playerStep}) 
+                if (moving) movablesHouseTwo.forEach(movable => {movable.position.y += playerStep})
             }
         
         
@@ -953,15 +1092,9 @@ function moving(currentScene) {
         
                 if (moving) movablesTownOne.forEach(movable => {movable.position.x -= playerStep})
                 if (moving) movablesHouseOne.forEach(movable => {movable.position.x += playerStep}) 
+                if (moving) movablesHouseTwo.forEach(movable => {movable.position.x += playerStep}) 
+
             }
-    
-
-
-
-
-
-
-
 
 
 
@@ -1067,6 +1200,110 @@ function moving(currentScene) {
                 }
         
                 if (moving) movablesHouseOne.forEach(movable => {movable.position.x -= playerStep})
+            }
+
+
+        case 3:
+
+            if (keys.w.pressed && lastKey === 'w') {
+                player.moving = true
+                player.image = player.sprites.up
+        
+                for (let i = 0; i < boundariesHouseTwo.length; i++) {
+                    const boundary = boundariesHouseTwo[i]
+                    if (
+                        rectengularCollision({
+                            rectangle1: player,
+                            rectangle2: {
+                                ...boundary, 
+                                position: {
+                                    x: boundary.position.x,
+                                    y: boundary.position.y + playerStep
+                                }
+                            }
+                        })
+                    ) {
+                        moving = false
+                        break
+                    }
+                }
+        
+                if (moving) movablesHouseTwo.forEach(movable => {movable.position.y += playerStep}) 
+            }    
+        
+        
+            
+            else if (keys.a.pressed && lastKey === 'a') {
+                player.moving = true
+                player.image = player.sprites.left
+        
+                for (let i = 0; i < boundariesHouseTwo.length; i++) {
+                    const boundary = boundariesHouseTwo[i]
+                    if (
+                        rectengularCollision({
+                            rectangle1: player,
+                            rectangle2: {...boundary, position: {
+                                x: boundary.position.x + playerStep,
+                                y: boundary.position.y 
+                            }}
+                        })
+                    ) {
+                        moving = false
+                        break
+                    }
+                }
+                
+        
+                if (moving) movablesHouseTwo.forEach(movable => {movable.position.x += playerStep})
+            }
+        
+        
+        
+            else if (keys.s.pressed && lastKey === 's') {
+                player.moving = true
+                player.image = player.sprites.down
+        
+                for (let i = 0; i < boundariesHouseTwo.length; i++) {
+                    const boundary = boundariesHouseTwo[i]
+                    if (
+                        rectengularCollision({
+                            rectangle1: player,
+                            rectangle2: {...boundary, position: {
+                                x: boundary.position.x,
+                                y: boundary.position.y - playerStep
+                            }}
+                        })
+                    ) {
+                        moving = false
+                        break
+                    }
+                }
+        
+                if (moving) movablesHouseTwo.forEach(movable => {movable.position.y -= playerStep})
+            }
+        
+        
+            else if (keys.d.pressed && lastKey === 'd') {
+                player.moving = true
+                player.image = player.sprites.right
+        
+                for (let i = 0; i < boundariesHouseTwo.length; i++) {
+                    const boundary = boundariesHouseTwo[i]
+                    if (
+                        rectengularCollision({
+                            rectangle1: player,
+                            rectangle2: {...boundary, position: {
+                                x: boundary.position.x - playerStep,
+                                y: boundary.position.y 
+                            }}
+                        })
+                    ) {
+                        moving = false
+                        break
+                    }
+                }
+        
+                if (moving) movablesHouseTwo.forEach(movable => {movable.position.x -= playerStep})
             }
 
 
