@@ -33,6 +33,11 @@ const offset = {
     y: -600
 }
 
+const offsetHouseOne = {
+    x: 55,
+    y: -400
+}
+
 
 // lade bilder
 
@@ -161,8 +166,8 @@ collisionsMapHouseOne.forEach((row, i) => {
         boundariesHouseOne.push(
                 new Boundary({
                     position: {
-                        x: j * Boundary.width,  
-                        y: i * Boundary.height
+                        x: j * Boundary.width + offsetHouseOne.x,  
+                        y: i * Boundary.height + offsetHouseOne.y
                     },
                     pixel: {
                         x: 24,
@@ -181,8 +186,8 @@ doorsMapHouseOne.forEach((row, i) => {
             doorsHouseOne.push(
                 new Door({
                     position: {
-                        x: j * Door.width,  
-                        y: i * Door.height
+                        x: j * Door.width + offsetHouseOne.x,  
+                        y: i * Door.height + offsetHouseOne.y
                     },
                     pixel: {
                         x: 24,
@@ -243,8 +248,8 @@ const fgTownOne = new Sprite({
 
 const houseOne = new Sprite({
     position: {
-        x: 0,
-        y: 0
+        x: offsetHouseOne.x,
+        y: offsetHouseOne.y
     },
     image: houseOneImgRaw,
     size: 0.75
@@ -252,8 +257,8 @@ const houseOne = new Sprite({
 
 const fgHouseOne = new Sprite({
     position: {
-        x: 0,
-        y: 0
+        x: offsetHouseOne.x,
+        y: offsetHouseOne.y
     },
     image: fgHouseOneImgRaw,
     size: 0.75
@@ -628,7 +633,7 @@ function loop() {
         teleported = teleported - 1
     }
 
-    console.log(teleported);
+    //console.log(teleported);
 
     if (fps > 99) {
         fps = 99
@@ -639,9 +644,7 @@ function loop() {
     setTimeRunning()
     setDocumentTitle(currentScene)
 
-    //boundaries.forEach(boundary => {boundary.draw()})
-
-
+    // boundaries.forEach(boundary => {boundary.draw()})
     // doors.forEach(door => {door.draw()})
 
     // doorsHouseOne.forEach(door => {door.draw()})
@@ -797,6 +800,7 @@ function eventListening(currentScene) {
         case 1:
             if (keys.e.pressed && onDoor!= 0 && teleported === 0) {
                 setCurrentScene(doorsDestiny[onDoor])
+            
                 teleported = 20
             }
             
@@ -870,6 +874,7 @@ function moving(currentScene) {
                 }
         
                 if (moving) movablesTownOne.forEach(movable => {movable.position.y += playerStep}) 
+                if (moving) movablesHouseOne.forEach(movable => {movable.position.y -= playerStep}) 
             }    
         
         
@@ -895,6 +900,7 @@ function moving(currentScene) {
                 }
         
                 if (moving) movablesTownOne.forEach(movable => {movable.position.x += playerStep})
+                if (moving) movablesHouseOne.forEach(movable => {movable.position.x -= playerStep}) 
             }
         
         
@@ -920,6 +926,7 @@ function moving(currentScene) {
                 }
         
                 if (moving) movablesTownOne.forEach(movable => {movable.position.y -= playerStep})
+                if (moving) movablesHouseOne.forEach(movable => {movable.position.y += playerStep}) 
             }
         
         
@@ -945,6 +952,7 @@ function moving(currentScene) {
                 }
         
                 if (moving) movablesTownOne.forEach(movable => {movable.position.x -= playerStep})
+                if (moving) movablesHouseOne.forEach(movable => {movable.position.x += playerStep}) 
             }
     
 
