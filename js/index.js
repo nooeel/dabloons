@@ -14,6 +14,7 @@ canvas.style.opacity = 1
 let currentScene = 2
 let nextScene = NaN
 
+let teleported = 0
 
 let dt = 0
 
@@ -180,8 +181,8 @@ doorsMapHouseOne.forEach((row, i) => {
             doorsHouseOne.push(
                 new Door({
                     position: {
-                        x: j * Door.width + offset.x ,  
-                        y: i * Door.height + offset.y 
+                        x: j * Door.width,  
+                        y: i * Door.height
                     },
                     pixel: {
                         x: 24,
@@ -622,7 +623,12 @@ function loop() {
     eventListening(currentScene)
     // console.log(secondsRunning + 'dt: ' + fps);
 
-    
+
+    if (teleported != 0) {
+        teleported = teleported - 1
+    }
+
+    console.log(teleported);
 
     if (fps > 99) {
         fps = 99
@@ -635,12 +641,13 @@ function loop() {
 
     //boundaries.forEach(boundary => {boundary.draw()})
 
-    doors.forEach(door => {door.draw()})
 
-    doorsHouseOne.forEach(door => {door.draw()})
-    boundariesHouseOne.forEach(boundary => {boundary.draw()})
+    // doors.forEach(door => {door.draw()})
 
-    console.log('onDoor: ' + onDoor +' - onDoorHouseOne: ' + onDoorHouseOne);
+    // doorsHouseOne.forEach(door => {door.draw()})
+    // boundariesHouseOne.forEach(boundary => {boundary.draw()})
+
+    // console.log('onDoor: ' + onDoor +' - onDoorHouseOne: ' + onDoorHouseOne);
 }
 loop();
 
@@ -788,13 +795,17 @@ function eventListening(currentScene) {
 
     switch (currentScene) {
         case 1:
-            if (keys.e.pressed && onDoor!= 0) setCurrentScene(doorsDestiny[onDoor])
+            if (keys.e.pressed && onDoor!= 0 && teleported === 0) {
+                setCurrentScene(doorsDestiny[onDoor])
+                teleported = 20
+            }
+            
             break
 
         case 2:
-            if (keys.e.pressed && onDoor != 0) {
-                setCurrentScene(doorsDestinyHouseOne[1])
-                console.log('test');
+            if (keys.e.pressed && onDoorHouseOne != 0 && teleported === 0) {
+                setCurrentScene(doorsDestinyHouseOne[onDoorHouseOne])
+                teleported = 20
             }
             break
     
