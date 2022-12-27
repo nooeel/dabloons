@@ -11,7 +11,7 @@ canvas.style.opacity = 1
 
 
 
-let currentScene = 3
+let currentScene = 0
 let nextScene = NaN
 
 let teleported = 0
@@ -39,8 +39,8 @@ const offsetHouseOne = {
 }
 
 const offsetHouseTwo = {
-    x: 100,
-    y: -450
+    x: -1193,
+    y: -500
 }
 
 
@@ -746,11 +746,11 @@ function loop() {
     // boundaries.forEach(boundary => {boundary.draw()})
     // doors.forEach(door => {door.draw()})
 
-    // doorsHouseOne.forEach(door => {door.draw()})
-    // boundariesHouseOne.forEach(boundary => {boundary.draw()})
+    doorsHouseOne.forEach(door => {door.draw()})
+    boundariesHouseOne.forEach(boundary => {boundary.draw()})
 
-    // doorsHouseTwo.forEach(door => {door.draw()})
-    // boundariesHouseTwo.forEach(boundary => {boundary.draw()})
+    doorsHouseTwo.forEach(door => {door.draw()})
+    boundariesHouseTwo.forEach(boundary => {boundary.draw()})
 
     // console.log('onDoor: ' + onDoor +' - onDoorHouseOne: ' + onDoorHouseOne);
 }
@@ -1011,8 +1011,6 @@ function moving(currentScene) {
                 }
         
                 if (moving) movablesTownOne.forEach(movable => {movable.position.y += playerStep}) 
-                if (moving) movablesHouseOne.forEach(movable => {movable.position.y -= playerStep}) 
-                if (moving) movablesHouseTwo.forEach(movable => {movable.position.y -= playerStep}) 
             }    
         
         
@@ -1038,7 +1036,6 @@ function moving(currentScene) {
                 }
         
                 if (moving) movablesTownOne.forEach(movable => {movable.position.x += playerStep})
-                if (moving) movablesHouseOne.forEach(movable => {movable.position.x -= playerStep}) 
             }
         
         
@@ -1064,8 +1061,6 @@ function moving(currentScene) {
                 }
         
                 if (moving) movablesTownOne.forEach(movable => {movable.position.y -= playerStep})
-                if (moving) movablesHouseOne.forEach(movable => {movable.position.y += playerStep}) 
-                if (moving) movablesHouseTwo.forEach(movable => {movable.position.y += playerStep})
             }
         
         
@@ -1091,10 +1086,10 @@ function moving(currentScene) {
                 }
         
                 if (moving) movablesTownOne.forEach(movable => {movable.position.x -= playerStep})
-                if (moving) movablesHouseOne.forEach(movable => {movable.position.x += playerStep}) 
-                if (moving) movablesHouseTwo.forEach(movable => {movable.position.x += playerStep}) 
+                
 
             }
+            break
 
 
 
@@ -1200,11 +1195,12 @@ function moving(currentScene) {
                 }
         
                 if (moving) movablesHouseOne.forEach(movable => {movable.position.x -= playerStep})
+                
             }
+            break
 
 
         case 3:
-
             if (keys.w.pressed && lastKey === 'w') {
                 player.moving = true
                 player.image = player.sprites.up
@@ -1228,7 +1224,7 @@ function moving(currentScene) {
                     }
                 }
         
-                if (moving) movablesHouseTwo.forEach(movable => {movable.position.y += playerStep}) 
+                if (moving) movablesHouseTwo.forEach(movable => {movable.position.y += playerStep})
             }    
         
         
@@ -1305,6 +1301,7 @@ function moving(currentScene) {
         
                 if (moving) movablesHouseTwo.forEach(movable => {movable.position.x -= playerStep})
             }
+            break
 
 
 
