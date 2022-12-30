@@ -746,8 +746,8 @@ function loop() {
     // boundaries.forEach(boundary => {boundary.draw()})
     // doors.forEach(door => {door.draw()})
 
-    doorsHouseOne.forEach(door => {door.draw()})
-    boundariesHouseOne.forEach(boundary => {boundary.draw()})
+    //doorsHouseOne.forEach(door => {door.draw()})
+    //boundariesHouseOne.forEach(boundary => {boundary.draw()})
 
     doorsHouseTwo.forEach(door => {door.draw()})
     boundariesHouseTwo.forEach(boundary => {boundary.draw()})
@@ -797,6 +797,11 @@ function render(currentScene) {
             houseTwo.draw()
             player.draw()
             fgHouseTwo.draw()
+            break
+
+
+        case 99: // testScene
+            
             break
 
 
@@ -852,17 +857,7 @@ function eventListening(currentScene) {
 
     if (currentScene === 0 && keys.space.pressed) {
         setCurrentScene(1)
-    }
-
-
-    // if (blendingOut) {
-    //     blendOut({blendSpeed: 0.05})
-    // } else if (blendedOut) {
-    //     canvas.style.opacity = '1.0'
-    //     setCurrentScene(nextScene)
-        
-    // }
-    
+    } 
 
 
     if (currentScene === 1 && (keys.w.pressed || keys.a.pressed || keys.s.pressed || keys.d.pressed)) {
