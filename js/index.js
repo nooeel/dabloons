@@ -11,7 +11,7 @@ canvas.style.opacity = 1
 
 
 
-let currentScene = 0
+let currentScene = 1
 let nextScene = NaN
 
 let teleported = 0
@@ -25,6 +25,7 @@ canvas.width = 1024
 canvas.height = 576
 
 
+coins = 100
 
 
 
@@ -499,11 +500,25 @@ const startTextInfo = new Writing({
 
 
 
+
+
 // ende Sprites
 
 
 
+// gui
 
+const coinsString = new Writing ({
+    text: 'coins: ' + NaN,
+    position: {
+        x: canvas.width - 200,
+        y: canvas.height - 37
+    },
+    textColor: '#5F6A6A',
+    size: '20'
+})
+
+const gui = new Gui()
 
 
 
@@ -702,6 +717,9 @@ const doorsDestinyHouseTwo = [
     1,  // d1
 ]
 
+
+
+
 // ----------------------------------------------------------------------------------------
 // ------------------------------       ENDE MIT INIT       -------------------------------
 // ----------------------------------------------------------------------------------------
@@ -749,8 +767,8 @@ function loop() {
     //doorsHouseOne.forEach(door => {door.draw()})
     //boundariesHouseOne.forEach(boundary => {boundary.draw()})
 
-    doorsHouseTwo.forEach(door => {door.draw()})
-    boundariesHouseTwo.forEach(boundary => {boundary.draw()})
+    // doorsHouseTwo.forEach(door => {door.draw()})
+    // boundariesHouseTwo.forEach(boundary => {boundary.draw()})
 
     // console.log('onDoor: ' + onDoor +' - onDoorHouseOne: ' + onDoorHouseOne);
 }
@@ -783,6 +801,9 @@ function render(currentScene) {
             townOneBg.draw()
             player.draw()
             fgTownOne.draw()
+
+            gui.draw({coins: coins})
+            
             break
 
         case 2: // houseOne

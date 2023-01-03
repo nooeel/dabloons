@@ -1,27 +1,30 @@
 class Gui {
-    constructor({location = bottom, canvasDimension, c}) {
-        this.location = location
-        this.canvasDimension = canvasDimension
-        
-        this.c = c
 
-        
+    
 
-
-        
+    constructor() {        
     }
 
-    draw() {
-        this.drawBg()
-    }
+    draw({coins}) {
+        c.fillStyle = '#593C23'
+        c.fillRect(
+            40,
+            canvas.height - 45,
+            canvas.width - 80,
+            35
+            )
 
-    drawBg() {
-        this.c.fillStyle = '#0D0D0D'
-        this.c.fillRect(
-            0,
-            this.canvasDimension.height - 200,
-            this.canvasDimension.width,
-            this.canvasDimension.height
-        )
+        c.fillStyle = '#0D0D0D'
+        c.fillRect(
+            44,
+            canvas.height - 40,
+            canvas.width - 88,
+            25
+            )
+
+        coinsString.text = 'coins: ' + coins
+        coinsString.write()
+
+        
     }
 }
