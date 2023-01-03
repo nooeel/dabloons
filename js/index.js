@@ -102,6 +102,10 @@ playerImgRight.src = 'assets/Images/playerRight.png'
 
 
 
+// items
+
+
+
 // mapping collisions etc
 
 
