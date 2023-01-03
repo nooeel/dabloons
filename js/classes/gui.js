@@ -12,6 +12,7 @@ class Gui {
         seven:  { x: 7 * 75 + 50, y: 529 },
         aight:  { x: 8 * 75 + 50, y: 529 },
         nine:   { x: 9 * 75 + 50, y: 529 },
+        none:   { x: 0,           y: -500 }
     }
     
 
@@ -55,57 +56,40 @@ class Gui {
                 529, 
                 64 * 0.6, 
                 64 * 0.6
-            )      
-            
-            switch (i) {
-                case 0: 
-                    this.indexInventarNumber.zero.write()
-                    break;
-
-                case 1: 
-                    this.indexInventarNumber.one.write()
-                    break;
-
-                case 2: 
-                    this.indexInventarNumber.two.write()
-                    break;
-
-                case 3: 
-                    this.indexInventarNumber.three.write()
-                    break;
-
-                case 4: 
-                    this.indexInventarNumber.four.write()
-                    break;
-
-                case 5: 
-                    this.indexInventarNumber.five.write()
-                    break;
-
-                case 6: 
-                    this.indexInventarNumber.six.write()
-                    break;
-
-                case 7: 
-                    this.indexInventarNumber.seven.write()
-                    break;
-
-                case 8: 
-                    this.indexInventarNumber.aight.write()
-                    break;
-
-                case 9: 
-                    this.indexInventarNumber.nine.write()
-                    break;
-
-                
-                default:
-                    console.error('wrong switch - at Gui indexInvNumber: ' + i);
-                    break;
-            }
-            
+            )  
         }
-        
+
+        this.indexInventarNumber.zero.write()
+        this.indexInventarNumber.one.write()
+        this.indexInventarNumber.two.write()
+        this.indexInventarNumber.three.write()
+        this.indexInventarNumber.four.write()
+        this.indexInventarNumber.five.write()
+        this.indexInventarNumber.six.write()
+        this.indexInventarNumber.seven.write()
+        this.indexInventarNumber.aight.write()
+        this.indexInventarNumber.nine.write()
+
+
+        if (items.amethyst.inInventar) {
+            items.amethyst.object.draw()
+        }
+
+        if (items.apple.inInventar) {
+            items.apple.object.draw()
+        }
+
+        if (items.arrow.inInventar) {
+            items.arrow.object.draw()
+        }
+
+        if (items.bakedPotato.inInventar) {
+            items.bakedPotato.object.draw()
+        }
+
+        if (items.bone.inInventar) {
+            items.bone.object.draw()
+        }
         
     }
 }

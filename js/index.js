@@ -107,11 +107,7 @@ playerImgRight.src = 'assets/Images/playerRight.png'
 
 
 
-// items
 
-
-// itemImgs. = new Image()
-// itemImgs..src = 'assets/Images/.png'
 
 const itemImgs = {
     amethyst: new Image(),
@@ -128,53 +124,90 @@ itemImgs.arrow.src          =   'assets/Images/items/arrow.png'
 itemImgs.bakedPotato.src    =   'assets/Images/items/baked_potato.png'
 itemImgs.bone.src           =   'assets/Images/items/bone.png'
 
+
+
 const items = {
 
-    amethyst: new Sprite({
-        position: {
-            x: 0,
-            y: -500
-        },
-        image: itemImgs.amethyst,
-        size: 0.5
-    }),
+    amethyst: {
+        object: 
+            new Sprite({
+                position: {
+                    x: 0,
+                    y: -500
+                },
+                image: itemImgs.amethyst,
+                size: 0.6
+            }),
 
-    apple: new Sprite({
-        position: {
-            x: 0,
-            y: -500
-        },
-        image: itemImgs.apple,
-        size: 0.6
-    }),
+         inInventar: false,
+         name: 'amethyst'
+    },
+    
+    apple: {
+        object: 
+            new Sprite({
+                position: {
+                    x: 0,
+                    y: -500
+                },
+                image: itemImgs.apple,
+                size: 0.6
+            }),
 
-    arrow: new Sprite({
-        position: {
-            x: 0,
-            y: -500
-        },
-        image: itemImgs.bakedPotato,
-        size: 0.5
-    }),
+         inInventar: false,
+         name: 'apple'
+    },
 
-    bakedPotato: new Sprite({
-        position: {
-            x: 0,
-            y: -500
-        },
-        image: itemImgs.bakedPotato,
-        size: 0.5
-    }),
+    arrow: {
+        object: 
+            new Sprite({
+                position: {
+                    x: 0,
+                    y: -500
+                },
+                image: itemImgs.arrow,
+                size: 0.6
+            }),
 
-    bone: new Sprite({
-        position: {
-            x: 0,
-            y: -500
-        },
-        image: itemImgs.bone,
-        size: 0.5
-    }),
+         inInventar: false,
+         name: 'arrow'
+    },
+
+    bakedPotato: {
+        object: 
+            new Sprite({
+                position: {
+                    x: 0,
+                    y: -500
+                },
+                image: itemImgs.bakedPotato,
+                size: 0.6
+            }),
+
+         inInventar: false,
+         name: 'baked Potato'
+    },
+
+    bone: {
+        object:
+            new Sprite({
+                position: {
+                    x: 0,
+                    y: -500
+                },
+                image: itemImgs.bone,
+                size: 0.6
+            }),
+
+         inInventar: false,
+         name: 'bone'
+    },
+
+
 }
+
+
+
 
 
 
@@ -698,6 +731,8 @@ const gui = new Gui(indexInventarNumber)
 
 
 
+
+
 // keyListener
 
 const keys = {
@@ -892,7 +927,10 @@ const doorsDestinyHouseTwo = [
     1,  // d1
 ]
 
-
+setInvSlot ({
+    slot: 'none',
+    item: items.apple
+})
 
 
 // ----------------------------------------------------------------------------------------
@@ -1006,9 +1044,6 @@ function render(currentScene) {
             c.fillStyle = 'lightblue'
             c.fillRect(0, 0, canvas.width, canvas.height)
             gui.draw({coins: coins})
-
-            items.apple.position = Gui.inventarPosition.six
-            items.apple.draw()
 
             
 
@@ -1621,4 +1656,74 @@ function sendMessageBanner({index, dauer}) {
         bannerLoop = false
     }
     
+}
+
+function setInvSlot({slot, item}) {
+
+    console.log(slot + ' + ' + item.name);
+
+    switch (slot) {
+        case 'none': 
+            console.log(item.name + ': removed from inventory');
+            item.object.position = Gui.inventarPosition.none
+            item.inInventar = false
+            break
+
+        case 0:
+            item.object.position = Gui.inventarPosition.zero
+            item.inInventar = true
+            break
+
+        case 1:
+            item.object.position = Gui.inventarPosition.one
+            item.inInventar = true
+            break;
+
+        case 2:
+            item.object.position = Gui.inventarPosition.two
+            item.inInventar = true
+            break;
+
+        case 3:
+            item.object.position = Gui.inventarPosition.three
+            item.inInventar = true
+            break;
+
+        case 4:
+            item.object.position = Gui.inventarPosition.four
+            item.inInventar = true
+            break;
+
+        case 5:
+            item.object.position = Gui.inventarPosition.five
+            item.inInventar = true
+            break;
+
+        case 6:
+            item.object.position = Gui.inventarPosition.six
+            item.inInventar = true
+            break;
+
+        case 7:
+            item.object.position = Gui.inventarPosition.seven
+            item.inInventar = true
+            break;
+
+        case 8:
+            item.object.position = Gui.inventarPosition.aight
+            item.inInventar = true
+            break;
+
+        case 9:
+            item.object.position = Gui.inventarPosition.nine
+            item.inInventar = true
+            break;
+
+        default:
+            console.error('wrong inventory slot: ' + slot);
+            break;
+
+        
+
+    }
 }
