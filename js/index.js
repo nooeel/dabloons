@@ -47,6 +47,11 @@ const offsetHouseTwo = {
 
 // lade bilder
 
+
+
+
+
+
 // town one
 
 const townOneImgRaw = new Image()
@@ -103,6 +108,74 @@ playerImgRight.src = 'assets/Images/playerRight.png'
 
 
 // items
+
+
+// itemImgs. = new Image()
+// itemImgs..src = 'assets/Images/.png'
+
+const itemImgs = {
+    amethyst: new Image(),
+    apple: new Image(),
+    arrow: new Image(),
+    bakedPotato: new Image(),
+    bone: new Image(),
+    
+}
+
+itemImgs.amethyst.src       =   'assets/Images/items/amethyst_shard.png'
+itemImgs.apple.src          =   'assets/Images/items/apple.png'
+itemImgs.arrow.src          =   'assets/Images/items/arrow.png'
+itemImgs.bakedPotato.src    =   'assets/Images/items/baked_potato.png'
+itemImgs.bone.src           =   'assets/Images/items/bone.png'
+
+const items = {
+
+    amethyst: new Sprite({
+        position: {
+            x: 0,
+            y: -500
+        },
+        image: itemImgs.amethyst,
+        size: 0.5
+    }),
+
+    apple: new Sprite({
+        position: {
+            x: 0,
+            y: -500
+        },
+        image: itemImgs.apple,
+        size: 0.6
+    }),
+
+    arrow: new Sprite({
+        position: {
+            x: 0,
+            y: -500
+        },
+        image: itemImgs.bakedPotato,
+        size: 0.5
+    }),
+
+    bakedPotato: new Sprite({
+        position: {
+            x: 0,
+            y: -500
+        },
+        image: itemImgs.bakedPotato,
+        size: 0.5
+    }),
+
+    bone: new Sprite({
+        position: {
+            x: 0,
+            y: -500
+        },
+        image: itemImgs.bone,
+        size: 0.5
+    }),
+}
+
 
 
 
@@ -504,6 +577,12 @@ const startTextInfo = new Writing({
 
 
 
+    
+
+
+
+
+
 
 
 // ende Sprites
@@ -522,7 +601,99 @@ const coinsString = new Writing ({
     size: '20'
 })
 
-const gui = new Gui()
+const indexInventarNumber = {
+    zero: new Writing({
+        text: '0',
+        position: {
+            x: 0 * 75 + 75,
+            y: 550
+        },
+        textColor: 'white'
+    }),
+
+    one: new Writing({
+        text: '1',
+        position: {
+            x: 1 * 75 + 75,
+            y: 550
+        },
+        textColor: 'white'
+    }),
+
+    two: new Writing({
+        text: '2',
+        position: {
+            x: 2 * 75 + 75,
+            y: 550
+        },
+        textColor: 'white'
+    }),
+
+    three: new Writing({
+        text: '3',
+        position: {
+            x: 3 * 75 + 75,
+            y: 550
+        },
+        textColor: 'white'
+    }),
+
+    four: new Writing({
+        text: '4',
+        position: {
+            x: 4 * 75 + 75,
+            y: 550
+        },
+        textColor: 'white'
+    }),
+
+    five: new Writing({
+        text: '5',
+        position: {
+            x: 5 * 75 + 75,
+            y: 550
+        },
+        textColor: 'white'
+    }),
+
+    six: new Writing({
+        text: '6',
+        position: {
+            x: 6 * 75 + 75,
+            y: 550
+        },
+        textColor: 'white'
+    }),
+
+    seven: new Writing({
+        text: '7',
+        position: {
+            x: 7 * 75 + 75,
+            y: 550
+        },
+        textColor: 'white'
+    }),
+
+    aight: new Writing({
+        text: '8',
+        position: {
+            x: 8 * 75 + 75,
+            y: 550
+        },
+        textColor: 'white'
+    }),
+
+    nine: new Writing({
+        text: '9',
+        position: {
+            x: 9 * 75 + 75,
+            y: 550
+        },
+        textColor: 'white'
+    }),
+}
+
+const gui = new Gui(indexInventarNumber)
 
 
 
@@ -729,7 +900,7 @@ const doorsDestinyHouseTwo = [
 // ----------------------------------------------------------------------------------------
 
 
-
+currentScene = 99
 
 function loop() {
     
@@ -815,6 +986,9 @@ function render(currentScene) {
             houseOne.draw()
             player.draw()
             fgHouseOne.draw()
+
+            gui.draw({coins: coins})
+
             break
 
         case 3: // houseTwo - Toms Café
@@ -822,11 +996,22 @@ function render(currentScene) {
             houseTwo.draw()
             player.draw()
             fgHouseTwo.draw()
+
+            gui.draw({coins: coins})
+            
             break
 
 
         case 99: // testScene
+            c.fillStyle = 'lightblue'
+            c.fillRect(0, 0, canvas.width, canvas.height)
+            gui.draw({coins: coins})
+
+            items.apple.position = Gui.inventarPosition.six
+            items.apple.draw()
+
             
+
             break
 
 
