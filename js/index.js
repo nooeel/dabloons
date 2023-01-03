@@ -11,7 +11,7 @@ canvas.style.opacity = 1
 
 
 
-let currentScene = 1
+let currentScene = 0
 let nextScene = NaN
 
 let teleported = 0
@@ -630,7 +630,7 @@ const coinsString = new Writing ({
         x: canvas.width - 200,
         y: canvas.height - 37
     },
-    textColor: '#5F6A6A',
+    textColor: '#ac673d',
     size: '20'
 })
 
@@ -759,12 +759,16 @@ const keys = {
     },
     space: {
         pressed: false
+    },
+    esc: {
+        pressed: false
     }
 }
 
 let lastKey
 let key
 window.addEventListener('keydown', (e) => {
+    //console.log(e);
     switch (e.key) {
         case 'w' :
             keys.w.pressed = true
@@ -806,6 +810,11 @@ window.addEventListener('keydown', (e) => {
             lastKey = 'space'
             break
 
+        case 'Escape' :
+            keys.esc.pressed = true
+            lastKey = 'esc'
+            break
+
     }
 })
 
@@ -835,17 +844,18 @@ window.addEventListener('keyup', (e) => {
         
         case 'o' :
             keys.o.pressed = false
-            lastKey = 'o'
             break   
             
         case 'l' :
             keys.l.pressed = false
-            lastKey = 'l'
             break 
             
         case ' ' :
             keys.space.pressed = false
-            lastKey = 'space'
+            break
+
+        case 'Escape' :
+            keys.esc.pressed = false
             break
     }
 })
@@ -927,10 +937,7 @@ const doorsDestinyHouseTwo = [
     1,  // d1
 ]
 
-setInvSlot ({
-    slot: 'none',
-    item: items.apple
-})
+
 
 
 // ----------------------------------------------------------------------------------------
@@ -938,7 +945,7 @@ setInvSlot ({
 // ----------------------------------------------------------------------------------------
 
 
-currentScene = 99
+// currentScene = 99
 
 function loop() {
     
@@ -1099,6 +1106,10 @@ function setDocumentTitle(currentScene) {
 
 
 function eventListening(currentScene) {
+
+    if (keys.esc.pressed) {
+        setCurrentScene(0)
+    }     
 
     if (currentScene === 0 && keys.space.pressed) {
         setCurrentScene(1)
@@ -1660,14 +1671,11 @@ function sendMessageBanner({index, dauer}) {
 
 function setInvSlot({slot, item}) {
 
-    console.log(slot + ' + ' + item.name);
-
     switch (slot) {
         case 'none': 
-            console.log(item.name + ': removed from inventory');
             item.object.position = Gui.inventarPosition.none
             item.inInventar = false
-            break
+            return item.name + ': removed from inventory'
 
         case 0:
             item.object.position = Gui.inventarPosition.zero
@@ -1722,8 +1730,9 @@ function setInvSlot({slot, item}) {
         default:
             console.error('wrong inventory slot: ' + slot);
             break;
-
-        
-
     }
+
+    return item.name + ': added on slot ' + slot
+
+    
 }
