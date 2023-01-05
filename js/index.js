@@ -15,6 +15,9 @@ let currentScene = 0
 let nextScene = NaN
 
 let teleported = 0
+let itemPickedUp = 0
+
+let nextFreeSlotFound
 
 let dt = 0
 
@@ -107,7 +110,7 @@ playerImgRight.src = 'assets/Images/playerRight.png'
 
 
 
-
+// items
 
 const itemImgs = {
     amethyst: new Image(),
@@ -127,6 +130,20 @@ itemImgs.bone.src           =   'assets/Images/items/bone.png'
 
 
 const items = {
+
+    // test: 
+
+    none: {
+        object: {
+            position: {
+                x: 0,
+                y: 0
+            }
+        },
+        
+        inInventar: false,
+        name: 'none'
+    },
 
     amethyst: {
         object: 
@@ -334,10 +351,13 @@ for (let i = 0; i < collisionsData_houseTwo.length; i+= 80) {
     collisionsMapHouseTwo.push(collisionsData_houseTwo.slice(i, 80 + i))
 }
 
-const doorsMapHouseTwo = []
+
+const usablesMapHouseTwo = []
 for (let i = 0; i < usablesData_houseTwo.length; i+= 80) {
-    doorsMapHouseTwo.push(usablesData_houseTwo.slice(i, 80 + i))
+    usablesMapHouseTwo.push(usablesData_houseTwo.slice(i, 80 + i))
 }
+
+
 
 
 const boundariesHouseTwo = []
@@ -361,7 +381,7 @@ collisionsMapHouseTwo.forEach((row, i) => {
 })
 
 const doorsHouseTwo = []
-doorsMapHouseTwo.forEach((row, i) => {
+usablesMapHouseTwo.forEach((row, i) => {
     row.forEach((symbol, j) => {
         if (symbol === 1) {
             doorsHouseTwo.push(
@@ -381,7 +401,26 @@ doorsMapHouseTwo.forEach((row, i) => {
     })
 })
 
-
+const usablesHouseTwo = []
+usablesMapHouseTwo.forEach((row, i) => {
+    row.forEach((symbol, j) => {
+        if (symbol != 0) {
+            usablesHouseTwo.push(
+                new Usable({
+                    position: {
+                        x: j * Usable.width + offsetHouseTwo.x,  
+                        y: i * Usable.height + offsetHouseTwo.y
+                    },
+                    pixel: {
+                        x: 24,
+                        y: 24
+                    },
+                    index: symbol
+                })
+            )
+        }
+    })
+})
 
 
 // Sprites erstellen
@@ -730,9 +769,6 @@ const gui = new Gui(indexInventarNumber)
 
 
 
-
-
-
 // keyListener
 
 const keys = {
@@ -749,6 +785,9 @@ const keys = {
         pressed: false
     },
     e: {
+        pressed: false
+    },
+    f: {
         pressed: false
     },
     o: {
@@ -793,6 +832,11 @@ window.addEventListener('keydown', (e) => {
         case 'e' :
             keys.e.pressed = true
             lastKey = 'e'
+            break
+
+        case 'f' :
+            keys.f.pressed = true
+            lastKey = 'f'
             break
 
         case 'o' :
@@ -840,6 +884,10 @@ window.addEventListener('keyup', (e) => {
 
         case 'e' :
             keys.e.pressed = false
+            break
+
+        case 'f' :
+            keys.f.pressed = false
             break
         
         case 'o' :
@@ -889,6 +937,8 @@ let onDoor = 0
 let onDoorHouseOne = 0
 let onDoorHouseTwo = 0
 
+let onUsableHouseTwo = 0
+
 
 
 // lists
@@ -911,7 +961,8 @@ const movablesHouseTwo = [
     houseTwo,
     fgHouseTwo,
     ...boundariesHouseTwo,
-    ...doorsHouseTwo
+    ...doorsHouseTwo,
+    ...usablesHouseTwo
 ]
 
 let archievement = [
@@ -939,6 +990,49 @@ const doorsDestinyHouseTwo = [
 
 
 
+let itemLocationsHouseTwo = [
+    items.none,    
+    items.none,    //  1   door
+    items.none,    //  2   Spieltisch
+    items.none,    //  3   Tisch groß rechts
+    items.none,    //  4   Tisch groß mitte
+    items.none,    //  5   Tisch klein unten rechts
+    items.none,    //  6   Tisch klein ul
+    items.none,    //  7   Tisch klein mr
+    items.none,    //  8   Tisch klein ml
+    items.none,    //  9   Tisch klein ol
+    items.none,    
+    items.none,    //  11  Tisch klein or
+    items.none,    //  12  Fenster
+    items.none,    //  13  box küche
+    items.none,    //  14  schrank
+    items.none,    //  15  washbecken/spiegel
+    items.none,    //  16  küchenbrett, zutaten
+    items.none,    //  17  kochplatte
+    items.none,    //  18  kühlschrank
+    items.none,    //  19  Teigschrank
+    items.none,    //  20  sofa
+    items.none,    //  21  drehstuhl
+]
+
+let invSlots = [    // invSlot belegt?
+    false,  // 0
+    false,  // 1
+    false,  // 2
+    false,  // 3
+    false,  // 4
+    false,  // 5
+    false,  // 6
+    false,  // 7
+    false,  // 8
+    false,  // 9
+]
+
+
+
+itemLocationsHouseTwo[2] = items.apple
+itemLocationsHouseTwo[15] = items.amethyst
+
 
 // ----------------------------------------------------------------------------------------
 // ------------------------------       ENDE MIT INIT       -------------------------------
@@ -946,6 +1040,7 @@ const doorsDestinyHouseTwo = [
 
 
 // currentScene = 99
+currentScene = 3
 
 function loop() {
     
@@ -960,6 +1055,7 @@ function loop() {
 
     dt += 1
     
+    updateInvSlots()
     
     render(currentScene)
     eventListening(currentScene)
@@ -968,6 +1064,10 @@ function loop() {
 
     if (teleported != 0) {
         teleported = teleported - 1
+    }
+
+    if (itemPickedUp != 0) {
+        itemPickedUp = itemPickedUp - 1
     }
 
     //console.log(teleported);
@@ -1081,7 +1181,7 @@ function setTimeRunning() {
 
     minutesRunning = Math.floor(secondsRunning / 60)
 
-    if (secondsRunning%60 < 10) {
+    if (secondsRunning % 60 < 10) {
         timeRunning = minutesRunning + ':' + '0' + secondsRunning % 60 + 'min'
     } else {
         timeRunning = minutesRunning + ':' + secondsRunning % 60 + 'min'
@@ -1106,6 +1206,33 @@ function setDocumentTitle(currentScene) {
 
 
 function eventListening(currentScene) {
+
+    if (keys.f.pressed && currentScene === 3) {
+        for (let i = 0; i < usablesHouseTwo.length; i++) {
+            const usable = usablesHouseTwo[i]
+            if (
+                rectengularCollision({
+                    rectangle1: player,
+                    rectangle2: {
+                        ...usable,
+                        position: {
+                            x: usable.position.x,
+                            y: usable.position.y 
+                        }
+                    }
+                })
+            ) {
+                onUsableHouseTwo = usable.index
+
+                touchUsable({
+                    index: usable.index,
+                    scene: 3
+                })
+
+                break
+            }
+        }
+    }
 
     if (keys.esc.pressed) {
         setCurrentScene(0)
@@ -1579,6 +1706,8 @@ function moving(currentScene) {
 // }
 
 
+
+
 function rectengularCollision({rectangle1, rectangle2}) {
     return( 
         rectangle1.position.x + rectangle1.width * rectangle1.size  >= rectangle2.position.x                            &&
@@ -1587,6 +1716,40 @@ function rectengularCollision({rectangle1, rectangle2}) {
         rectangle1.position.y                                       <= rectangle2.position.y + rectangle2.height
     )
 }
+
+
+
+// function updateInvSlots() {
+//     for (const [item, inInven] of object) {
+        
+//     }
+
+//         //invSlots[item.inInventar] = item
+    
+// }
+
+
+function touchUsable({index, scene}) {
+    // console.log('index: ' + index + ', scene: ' + scene);
+
+    switch (scene) {
+        case 3:
+            if (itemPickedUp === 0) {
+                setInvSlot({
+                    slot: getNextFreeSlot(), 
+                    item: itemLocationsHouseTwo[index]
+                })
+                itemPickedUp = 30
+            }
+            
+            break;
+    
+        default:
+            console.error('No valid scene - at touchUsable');
+            break;
+    }
+}
+
 
 
 
@@ -1672,60 +1835,74 @@ function sendMessageBanner({index, dauer}) {
 function setInvSlot({slot, item}) {
 
     switch (slot) {
-        case 'none': 
+        case 'remove': 
             item.object.position = Gui.inventarPosition.none
+            itemInventarSlot = item.none
             item.inInventar = false
             return item.name + ': removed from inventory'
 
         case 0:
             item.object.position = Gui.inventarPosition.zero
+            itemInventarSlot[0] = item
             item.inInventar = true
             break
 
         case 1:
             item.object.position = Gui.inventarPosition.one
+            itemInventarSlot[1] = item
             item.inInventar = true
             break;
 
         case 2:
             item.object.position = Gui.inventarPosition.two
+            itemInventarSlot[2] = item
             item.inInventar = true
             break;
 
         case 3:
             item.object.position = Gui.inventarPosition.three
+            itemInventarSlot[3] = item
             item.inInventar = true
             break;
 
         case 4:
             item.object.position = Gui.inventarPosition.four
+            itemInventarSlot[4] = item
             item.inInventar = true
             break;
 
         case 5:
             item.object.position = Gui.inventarPosition.five
+            itemInventarSlot[5] = item
             item.inInventar = true
             break;
 
         case 6:
             item.object.position = Gui.inventarPosition.six
+            itemInventarSlot[6] = item
             item.inInventar = true
             break;
 
         case 7:
             item.object.position = Gui.inventarPosition.seven
+            itemInventarSlot[7] = item
             item.inInventar = true
             break;
 
         case 8:
             item.object.position = Gui.inventarPosition.aight
+            itemInventarSlot[8] = item
             item.inInventar = true
             break;
 
         case 9:
             item.object.position = Gui.inventarPosition.nine
+            itemInventarSlot[9] = item
             item.inInventar = true
             break;
+
+        case 'none':
+            break
 
         default:
             console.error('wrong inventory slot: ' + slot);
@@ -1735,4 +1912,15 @@ function setInvSlot({slot, item}) {
     return item.name + ': added on slot ' + slot
 
     
+}
+
+
+function getNextFreeSlot() {
+    slot = 0
+    for (slot = 0; slot < 10; slot++) {
+        if (itemInventarSlot[slot] === items.none) {
+            return slot
+        }
+    }
+    return 'none'
 }
