@@ -141,7 +141,7 @@ const items = {
         },
         
         inInventar: false,
-        name: 'none'
+        name: false
     },
 
     amethyst: {
@@ -1026,6 +1026,8 @@ let invSlots = [    // invSlot belegt?
     false,  // 8
     false,  // 9
 ]
+
+
 
 
 
@@ -1935,3 +1937,5 @@ function getNextFreeSlot() {
     }
     return 'none'
 }
+
+
