@@ -71,6 +71,8 @@ class Gui {
         this.indexInventarNumber.nine.write()
 
 
+        
+
         if (items.amethyst.inInventar != false) {
             items.amethyst.object.draw()
         }

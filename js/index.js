@@ -131,7 +131,6 @@ itemImgs.bone.src           =   'assets/Images/items/bone.png'
 
 const items = {
 
-    // test: 
 
     none: {
         object: {
@@ -1719,14 +1718,37 @@ function rectengularCollision({rectangle1, rectangle2}) {
 
 
 
-// function updateInvSlots() {
-//     for (const [item, inInven] of object) {
-        
-//     }
+function updateInvSlots() {
+    clearInvSlots()
+    for (const [item, inInventory] of Object.entries(items)) {
+        //console.log(item + ': ' + inInventory.inInventar);
 
-//         //invSlots[item.inInventar] = item
+        invSlots[inInventory.inInventar] = item
+
+        // if (inInventory.inInventar != false) {
+        //     invSlots[inInventory.inInventar] = item
+        // }
+
+    }
+
+        //invSlots[item.inInventar] = item
     
-// }
+}
+
+function clearInvSlots() {
+    invSlots = [ 
+        false,  // 0
+        false,  // 1
+        false,  // 2
+        false,  // 3
+        false,  // 4
+        false,  // 5
+        false,  // 6
+        false,  // 7
+        false,  // 8
+        false,  // 9
+    ]
+}
 
 
 function touchUsable({index, scene}) {
@@ -1837,68 +1859,57 @@ function setInvSlot({slot, item}) {
     switch (slot) {
         case 'remove': 
             item.object.position = Gui.inventarPosition.none
-            itemInventarSlot = item.none
             item.inInventar = false
             return item.name + ': removed from inventory'
 
         case 0:
             item.object.position = Gui.inventarPosition.zero
-            itemInventarSlot[0] = item
-            item.inInventar = true
+            item.inInventar = 0
             break
 
         case 1:
             item.object.position = Gui.inventarPosition.one
-            itemInventarSlot[1] = item
-            item.inInventar = true
+            item.inInventar = 1
             break;
 
         case 2:
             item.object.position = Gui.inventarPosition.two
-            itemInventarSlot[2] = item
-            item.inInventar = true
+            item.inInventar = 2
             break;
 
         case 3:
             item.object.position = Gui.inventarPosition.three
-            itemInventarSlot[3] = item
-            item.inInventar = true
+            item.inInventar = 3
             break;
 
         case 4:
             item.object.position = Gui.inventarPosition.four
-            itemInventarSlot[4] = item
-            item.inInventar = true
+            item.inInventar = 4
             break;
 
         case 5:
             item.object.position = Gui.inventarPosition.five
-            itemInventarSlot[5] = item
-            item.inInventar = true
+            item.inInventar = 5
             break;
 
         case 6:
             item.object.position = Gui.inventarPosition.six
-            itemInventarSlot[6] = item
-            item.inInventar = true
+            item.inInventar = 6
             break;
 
         case 7:
             item.object.position = Gui.inventarPosition.seven
-            itemInventarSlot[7] = item
-            item.inInventar = true
+            item.inInventar = 7
             break;
 
         case 8:
             item.object.position = Gui.inventarPosition.aight
-            itemInventarSlot[8] = item
-            item.inInventar = true
+            item.inInventar = 8
             break;
 
         case 9:
             item.object.position = Gui.inventarPosition.nine
-            itemInventarSlot[9] = item
-            item.inInventar = true
+            item.inInventar = 9
             break;
 
         case 'none':
@@ -1918,7 +1929,7 @@ function setInvSlot({slot, item}) {
 function getNextFreeSlot() {
     slot = 0
     for (slot = 0; slot < 10; slot++) {
-        if (itemInventarSlot[slot] === items.none) {
+        if (invSlots[slot] === false) {
             return slot
         }
     }
