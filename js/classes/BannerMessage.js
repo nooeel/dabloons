@@ -38,7 +38,4 @@ class BannerMessage {
         this.textBody.position.y = this.position.y + 35
         this.textBody.write()
     }
-
-    
-
 }

@@ -109,6 +109,9 @@ playerImgRight.src = 'assets/Images/playerRight.png'
 
 
 
+const mapImg = new Image()
+mapImg.src = 'assets/Images/map_background.png'
+
 
 // items
 
@@ -648,10 +651,11 @@ const startTextInfo = new Writing({
 
 
 
-    
-
-
-
+const map = new Sprite({
+    position: TableInventory.position,
+    image: mapImg,
+    size: TableInventory.mapSize
+})
 
 
 
@@ -765,6 +769,19 @@ const indexInventarNumber = {
 }
 
 const gui = new Gui(indexInventarNumber)
+
+const apple = {
+    item:
+        new Sprite({
+            position: {x: 450, y: 260},
+            image: items.apple.object.image,
+            size: 1,
+        }),
+    map: map
+}
+
+
+// const tableInventoryApple = new TableInventory()
 
 
 
@@ -1014,6 +1031,8 @@ let itemLocationsHouseTwo = [
     items.none,    //  21  drehstuhl
 ]
 
+
+
 let invSlots = [    // invSlot belegt?
     false,  // 0
     false,  // 1
@@ -1102,7 +1121,7 @@ loop();
 // ------------------------------       FUNCTIONS       -----------------------------------
 // ----------------------------------------------------------------------------------------
 
-
+// render currentscene + gamelogic
 
 function render(currentScene) {
 
@@ -1134,6 +1153,7 @@ function render(currentScene) {
             fgHouseOne.draw()
 
             gui.draw({coins: coins})
+            
 
             break
 
@@ -1144,6 +1164,12 @@ function render(currentScene) {
             fgHouseTwo.draw()
 
             gui.draw({coins: coins})
+            
+            apple.map.draw()
+            apple.item.draw()
+            
+
+            
             
             break
 
@@ -1706,6 +1732,8 @@ function moving(currentScene) {
     
 // }
 
+
+// other functions
 
 
 

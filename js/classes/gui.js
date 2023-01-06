@@ -71,27 +71,11 @@ class Gui {
         this.indexInventarNumber.nine.write()
 
 
-        
-
-        if (items.amethyst.inInventar != false) {
-            items.amethyst.object.draw()
-        }
-
-        if (items.apple.inInventar != false) {
-            items.apple.object.draw()
-        }
-
-        if (items.arrow.inInventar != false) {
-            items.arrow.object.draw()
-        }
-
-        if (items.bakedPotato.inInventar != false) {
-            items.bakedPotato.object.draw()
-        }
-
-        if (items.bone.inInventar != false) {
-            items.bone.object.draw()
-        }
+        items.amethyst.object.draw()
+        items.apple.object.draw()
+        items.arrow.object.draw()
+        items.bakedPotato.object.draw()
+        items.bone.object.draw()
         
     }
 }
