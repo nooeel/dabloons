@@ -32,7 +32,9 @@ canvas.height = 576
 
 
 let talkingToQuester = false
-
+let level = 'start'
+let line = 0
+let lined = 0
 
 coins = 100
 
@@ -852,7 +854,15 @@ const indexInventarNumber = {
 
 const gui = new Gui(indexInventarNumber)
 
-
+const talking = new Writing({
+    text: 'test',
+    font: 'luminari',
+    size: '30',
+    position: { x: 50, y: 470},
+    padding: 10,
+    textColor: 'black',
+    backgroundColor: 'grey'
+})
 
 
 
@@ -999,7 +1009,6 @@ window.addEventListener('keyup', (e) => {
 })
 
 
-let events = []
 
 let be = Date.now(),fps=0,info='';
 
@@ -1135,7 +1144,7 @@ itemLocationsHouseTwo[15] = items.amethyst
 
 
 // currentScene = 99
-currentScene = 2
+// currentScene = 2
 
 function loop() {
     
@@ -1170,8 +1179,16 @@ function loop() {
         itemPickedUp = itemPickedUp - 1
     }
 
+    if (lined != 0) {
+        lined = lined - 1
+    }
+
+
+    
+
     if (talkingToQuester) {
-        
+        talk({level: level, line: line})
+        talking.write()
     }
 
     //console.log(teleported);
@@ -1318,6 +1335,14 @@ function setDocumentTitle(currentScene) {
 
 function eventListening(currentScene) {
 
+
+
+    if (currentScene === 2 && keys.space.pressed && lined === 0) {
+        c.clearRect(0, 0, canvas.width, canvas.height)
+        line = line + 1
+        lined = 30
+    }
+
     if (rectengularCollisionPlayers({
         player1: player,
         player2: quester
@@ -1327,7 +1352,7 @@ function eventListening(currentScene) {
         talkingToQuester = false
     }
 
-    if (onUsableHouseTwo != 0) {
+    if (onUsableHouseTwo != 0 && onUsableHouseTwo != 1) {
         showTableInventory({item: itemLocationsHouseTwo[onUsableHouseTwo]})
     }
 
@@ -1498,6 +1523,7 @@ function eventListening(currentScene) {
 
 function moving(currentScene) {
 
+    
 
     const playerStep = 3
     let moving = true
@@ -2097,4 +2123,21 @@ function showTableInventory({item}) {
         map.draw()
         item.tableInventory.draw()
     }
+}
+
+
+function talk({level, line}) {
+
+    switch (level) {
+        case 'start':
+            console.log(quest.level.start.talking[line]);
+            talking.text = quest.level.start.talking[line]
+            break;
+    
+        default:
+            break;
+    }
+
+    
+    
 }
