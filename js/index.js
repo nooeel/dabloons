@@ -133,6 +133,10 @@ mapImg.src = 'assets/Images/map_background.png'
 
 // items
 
+let randomItem
+let randomPosition
+let randomDabloons
+
 const itemImgs = {
     amethyst: new Image(),
     apple: new Image(),
@@ -1170,6 +1174,9 @@ let itemLocationsHouseTwo = [
     items.none,    //  19  Teigschrank
     items.none,    //  20  sofa
     items.none,    //  21  drehstuhl
+    items.none,    //  22  rundtisch rechts
+    items.none,    //  23  rundtisch links
+
 ]
 
 
@@ -1192,7 +1199,6 @@ let invSlots = [    // invSlot belegt?
 
 
 itemLocationsHouseTwo[2] = items.apple
-itemLocationsHouseTwo[15] = items.amethyst
 
 
 // ----------------------------------------------------------------------------------------
@@ -1201,7 +1207,7 @@ itemLocationsHouseTwo[15] = items.amethyst
 
 
 // currentScene = 99
-currentScene = 2
+
 
 function loop() {
     
@@ -1496,20 +1502,22 @@ function eventListening(currentScene) {
 
     if (currentScene === 2 && (keys.w.pressed || keys.a.pressed || keys.s.pressed || keys.d.pressed)) {
         for (let i = 0; i < doorsHouseOne.length; i++) {
-            const doorHouse = doorsHouseOne[i]
+            const doorHouseOne = doorsHouseOne[i]
             if (
                 rectengularCollision({
                     rectangle1: player,
                     rectangle2: {
-                        ...doorHouse,
+                        ...doorHouseOne,
                         position: {
-                            x: doorHouse.position.x,
-                            y: doorHouse.position.y 
+                            x: doorHouseOne.position.x,
+                            y: doorHouseOne.position.y 
                         }
                     }
                 })
             ) {
-                onDoorHouseOne = doorHouse.index
+                onDoorHouseOne = doorHouseOne.index
+            } else {
+                onDoorHouseOne = 0
             }
         }
     }
@@ -1529,7 +1537,9 @@ function eventListening(currentScene) {
                     }
                 })
             ) {
-                onDoorHouseTwo = doorHouseTwo.index
+                onDoorHouseTwo = 1
+            } else {
+                onDoorHouseTwo = 0
             }
         }
     }
@@ -1585,7 +1595,7 @@ function moving(currentScene) {
 
     
 
-    const playerStep = 3
+    const playerStep = 5
     let moving = true
     player.moving = false
 
@@ -2188,6 +2198,9 @@ function showTableInventory({item}) {
 
 function talk({level, line}) {
 
+    
+
+
     switch (level) {
         case 0:
             
@@ -2208,9 +2221,52 @@ function talk({level, line}) {
                 if (keys.f.pressed) {
                     c.clearRect(0, 0, canvas.width, canvas.height)
                     setInvSlot({slot: 'remove', item: items.apple})
+                    nextLevel(2)
                     coins = coins + 10
+                    newRandomItem()
+                    newRandomDabloons()
                 }
             } 
+            break
+
+        case 2: 
+            
+            talking.text = 'Dein neuer Auftrag hole mir: ' + randomItem.name
+            talking.write()
+
+            if (randomItem.inInventar != 'false') {
+                talking.text = 'Danke! Du bekommst ' + randomDabloons + ' Dabloons fuer deine Hilfe. Druecke "f"'
+            
+                if (keys.f.pressed) {
+                    c.clearRect(0, 0, canvas.width, canvas.height)
+                    setInvSlot({slot: 'remove', item: randomItem})
+                    nextLevel(3)
+                    coins = coins + randomDabloons
+                    newRandomItem()
+                    newRandomDabloons()
+                }
+            } 
+            break
+
+        case 3:
+
+            talking.text = 'Dein neuer Auftrag hole mir: ' + randomItem.name
+            talking.write()
+
+            if (randomItem.inInventar != 'false') {
+                talking.write()
+                talking.text = 'Danke! Du bekommst ' + randomDabloons + ' Dabloons fuer deine Hilfe. Druecke "f"'
+            
+                if (keys.f.pressed) {
+                    c.clearRect(0, 0, canvas.width, canvas.height)
+                    setInvSlot({slot: 'remove', item: randomItem})
+                    nextLevel(2)
+                    coins = coins + randomDabloons
+                    newRandomItem()
+                    newRandomDabloons()
+                }
+            } 
+            break
 
             
     
@@ -2230,13 +2286,28 @@ function nextLevel(newLevel) {
 
 
 function questRender({level}) {
-    switch (level) {
-        case 1:
-            items.apple.quest.draw()
-            break;
-    
-        default:
-            break;
+
+    if (level === 1) {
+        items.apple.quest.draw()
+    } else if (level === 2 || level === 3) {
+        randomItem.quest.draw()
     }
+}
+
+function newRandomItem() {
+    const item = [items.amethyst, items.apple, items.arrow, items.bakedPotato, items.bone]
+    const locationNumbers = [2,3,4,5,6,7,8,9, 11,12,13,14,15,16,17,18,19,20,21,22,23]
+
+    let rand0b4     =   Math.floor(Math.random() * 5)
+    let rand0b18    =   Math.floor(Math.random() * 20)
+
+    randomItem = item[rand0b4]    // item 0 - 4
+    randomPosition = locationNumbers[rand0b18]    // position 2 - 9 + 11 - 23
     
+
+    itemLocationsHouseTwo[randomPosition] = randomItem
+}
+
+function newRandomDabloons() {
+    randomDabloons = Math.floor(Math.random() * 50 + 2)
 }
