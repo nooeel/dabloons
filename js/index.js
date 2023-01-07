@@ -1,11 +1,14 @@
 
 
+
+
+
 const canvas = document.querySelector('canvas')
 const c = canvas.getContext('2d')  //context
 canvas.style.opacity = 1
 
 
-
+console.log(quest);
 
 
 
@@ -28,6 +31,9 @@ canvas.width = 1024
 canvas.height = 576
 
 
+let talkingToQuester = false
+
+
 coins = 100
 
 
@@ -46,6 +52,9 @@ const offsetHouseTwo = {
     x: -1193,
     y: -500
 }
+
+
+
 
 
 // lade bilder
@@ -108,6 +117,10 @@ const playerImgRight = new Image()
 playerImgRight.src = 'assets/Images/playerRight.png'
 
 
+const questerImg = new Image()
+questerImg.src = 'assets/Images/quester.png'
+
+
 
 const mapImg = new Image()
 mapImg.src = 'assets/Images/map_background.png'
@@ -157,7 +170,6 @@ const tableInventory = {
 
 
 const items = {
-
 
     none: {
         object: {
@@ -571,6 +583,18 @@ const player = new Sprite({
     size: 0.75
 })
 
+
+const quester = new Sprite({
+    position: {
+        x: offsetHouseOne.x + 880,
+        y: offsetHouseOne.y + 160
+    },
+    image: questerImg,
+    frames: {
+        max: 4
+    },
+    size: 2
+})
 
 
 
@@ -1019,8 +1043,9 @@ const movablesTownOne = [      // elemente die sich durch moving nicht mitbewege
 const movablesHouseOne = [
     houseOne,
     fgHouseOne,
+    quester,
     ...boundariesHouseOne,
-    ...doorsHouseOne
+    ...doorsHouseOne,
 ]
 
 const movablesHouseTwo = [
@@ -1110,7 +1135,7 @@ itemLocationsHouseTwo[15] = items.amethyst
 
 
 // currentScene = 99
-currentScene = 3
+currentScene = 2
 
 function loop() {
     
@@ -1145,6 +1170,10 @@ function loop() {
         itemPickedUp = itemPickedUp - 1
     }
 
+    if (talkingToQuester) {
+        
+    }
+
     //console.log(teleported);
 
     if (fps > 99) {
@@ -1156,11 +1185,13 @@ function loop() {
     setTimeRunning()
     setDocumentTitle(currentScene)
 
+
+
     // boundaries.forEach(boundary => {boundary.draw()})
     // doors.forEach(door => {door.draw()})
 
-    //doorsHouseOne.forEach(door => {door.draw()})
-    //boundariesHouseOne.forEach(boundary => {boundary.draw()})
+    // doorsHouseOne.forEach(door => {door.draw()})
+    // boundariesHouseOne.forEach(boundary => {boundary.draw()})
 
     // doorsHouseTwo.forEach(door => {door.draw()})
     // boundariesHouseTwo.forEach(boundary => {boundary.draw()})
@@ -1204,6 +1235,7 @@ function render(currentScene) {
         case 2: // houseOne
             player.size = 1
             houseOne.draw()
+            quester.draw()
             player.draw()
             fgHouseOne.draw()
 
@@ -1285,6 +1317,15 @@ function setDocumentTitle(currentScene) {
 
 
 function eventListening(currentScene) {
+
+    if (rectengularCollisionPlayers({
+        player1: player,
+        player2: quester
+    })) {
+        talkingToQuester = true
+    } else {
+        talkingToQuester = false
+    }
 
     if (onUsableHouseTwo != 0) {
         showTableInventory({item: itemLocationsHouseTwo[onUsableHouseTwo]})
@@ -1815,9 +1856,18 @@ function moving(currentScene) {
 function rectengularCollision({rectangle1, rectangle2}) {
     return( 
         rectangle1.position.x + rectangle1.width * rectangle1.size  >= rectangle2.position.x                            &&
-        rectangle1.position.x                                       <= rectangle2.position.x + rectangle2.width        &&
+        rectangle1.position.x                                       <= rectangle2.position.x + rectangle2.width         &&
         rectangle1.position.y + rectangle1.height * rectangle1.size >= rectangle2.position.y                            &&    
         rectangle1.position.y                                       <= rectangle2.position.y + rectangle2.height
+    )
+}
+
+function rectengularCollisionPlayers({player1, player2}) {
+    return( 
+        player1.position.x + player1.width * player1.size           >= player2.position.x                                   &&
+        player1.position.x                                          <= player2.position.x + player2.width * player2.size    &&
+        player1.position.y + player1.height * player1.size          >= player2.position.y                                   &&    
+        player1.position.y                                          <= player2.position.y + player2.height * player2.size
     )
 }
 
