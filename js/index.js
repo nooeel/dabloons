@@ -1137,6 +1137,10 @@ function loop() {
         teleported = teleported - 1
     }
 
+    if (itemPickedUp === 30) {
+        itemLocationsHouseTwo[onUsableHouseTwo] = items.none
+    }
+
     if (itemPickedUp != 0) {
         itemPickedUp = itemPickedUp - 1
     }
@@ -1823,17 +1827,8 @@ function updateInvSlots() {
     clearInvSlots()
     for (const [item, inInventory] of Object.entries(items)) {
         //console.log(item + ': ' + inInventory.inInventar);
-
         invSlots[inInventory.inInventar] = item
-
-        // if (inInventory.inInventar != false) {
-        //     invSlots[inInventory.inInventar] = item
-        // }
-
-    }
-
-        //invSlots[item.inInventar] = item
-    
+    }    
 }
 
 function clearInvSlots() {
@@ -1863,6 +1858,7 @@ function touchUsable({index, scene}) {
                     item: itemLocationsHouseTwo[index]
                 })
                 itemPickedUp = 30
+                
             }
             
             break;
@@ -1880,8 +1876,6 @@ function touchUsable({index, scene}) {
 
 
 function renderTiles(currentScene) {
-
-
     switch (currentScene) {
         case 1: 
             boundaries.forEach(boundary => {
@@ -1902,11 +1896,16 @@ function renderTiles(currentScene) {
                 door.draw()
             })
             break
-        
-        
 
-        
-
+        case 3:
+            boundariesHouseTwo.forEach(boundary => {
+                boundary.draw()
+            })   
+    
+            usablesHouseTwo.forEach(door => {
+                door.draw()
+            })
+            break
     }    
 }
 
