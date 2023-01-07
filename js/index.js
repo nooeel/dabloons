@@ -131,6 +131,21 @@ itemImgs.bakedPotato.src    =   'assets/Images/items/baked_potato.png'
 itemImgs.bone.src           =   'assets/Images/items/bone.png'
 
 
+const itemInventoryImgs = {
+    amethyst: new Image(),
+    apple: new Image(),
+    arrow: new Image(),
+    bakedPotato: new Image(),
+    bone: new Image(),
+}
+
+itemInventoryImgs.amethyst.src       =   'assets/Images/items/amethyst_shard.png'
+itemInventoryImgs.apple.src          =   'assets/Images/items/apple.png'
+itemInventoryImgs.arrow.src          =   'assets/Images/items/arrow.png'
+itemInventoryImgs.bakedPotato.src    =   'assets/Images/items/baked_potato.png'
+itemInventoryImgs.bone.src           =   'assets/Images/items/bone.png'
+
+
 const tableInventory = {
     position: {x: 450, y: 250},
     itemSize: 0.8,
@@ -171,7 +186,7 @@ const items = {
             new Sprite({
                 position: tableInventory.position,
                 size: tableInventory.itemSize,
-                image: itemImgs.amethyst
+                image: itemInventoryImgs.amethyst
             }),
 
         inInventar: false,
@@ -193,7 +208,7 @@ const items = {
             new Sprite({
                 position: tableInventory.position,
                 size: tableInventory.itemSize,
-                image: itemImgs.apple
+                image: itemInventoryImgs.apple
             }),
         
 
@@ -216,7 +231,7 @@ const items = {
             new Sprite({
                 position: tableInventory.position,
                 size: tableInventory.itemSize,
-                image: itemImgs.arrow
+                image: itemInventoryImgs.arrow
             }),
 
         inInventar: false,
@@ -238,7 +253,7 @@ const items = {
             new Sprite({
                 position: tableInventory.position,
                 size: tableInventory.itemSize,
-                image: itemImgs.bakedPotato
+                image: itemInventoryImgs.bakedPotato
             }),
         inInventar: false,
         name: 'baked Potato'
@@ -259,7 +274,7 @@ const items = {
             new Sprite({
                 position: tableInventory.position,
                 size: tableInventory.itemSize,
-                image: itemImgs.bone
+                image: itemInventoryImgs.bone
             }),
         
         inInventar: false,
@@ -1114,6 +1129,7 @@ function loop() {
     
     render(currentScene)
     eventListening(currentScene)
+    moving(currentScene)
     // console.log(secondsRunning + 'dt: ' + fps);
 
 
@@ -1200,7 +1216,7 @@ function render(currentScene) {
 
             gui.draw({coins: coins})
             
-            showTableInventory({item: items.apple})
+            // showTableInventory({item: items.apple})
             
             
             break
@@ -1266,7 +1282,11 @@ function setDocumentTitle(currentScene) {
 
 function eventListening(currentScene) {
 
-    if (keys.f.pressed && currentScene === 3) {
+    if (onUsableHouseTwo != 0) {
+        showTableInventory({item: itemLocationsHouseTwo[onUsableHouseTwo]})
+    }
+
+    if ((keys.w.pressed || keys.a.pressed || keys.s.pressed || keys.d.pressed) && currentScene === 3) {
         for (let i = 0; i < usablesHouseTwo.length; i++) {
             const usable = usablesHouseTwo[i]
             if (
@@ -1282,12 +1302,33 @@ function eventListening(currentScene) {
                 })
             ) {
                 onUsableHouseTwo = usable.index
+                break
+            } else {
+                onUsableHouseTwo = 0
+            }
+        }
+    }
 
+    if (keys.f.pressed && currentScene === 3 ) {
+        for (let i = 0; i < usablesHouseTwo.length; i++) {
+            const usable = usablesHouseTwo[i]
+            if (
+                rectengularCollision({
+                    rectangle1: player,
+                    rectangle2: {
+                        ...usable,
+                        position: {
+                            x: usable.position.x,
+                            y: usable.position.y 
+                        }
+                    }
+                })
+            ) {
+                onUsableHouseTwo = usable.index
                 touchUsable({
                     index: usable.index,
                     scene: 3
                 })
-
                 break
             }
         }
@@ -1406,9 +1447,8 @@ function eventListening(currentScene) {
 
     
 
-    moving(currentScene)
+    
 }
-
 
 
 function moving(currentScene) {
@@ -1764,10 +1804,7 @@ function moving(currentScene) {
     
 // }
 
-
 // other functions
-
-
 
 
 
@@ -1997,7 +2034,7 @@ function getNextFreeSlot() {
             return slot
         }
     }
-    return 'none'
+    return false
 }
 
 
@@ -2005,8 +2042,10 @@ function getNextFreeSlot() {
 
 function showTableInventory({item}) {
 
-
-    map.draw()
-    item.tableInventory.draw()
-
+    if (item === items.none) {
+        map.draw()
+    } else {
+        map.draw()
+        item.tableInventory.draw()
+    }
 }
