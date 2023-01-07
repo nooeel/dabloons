@@ -36,7 +36,7 @@ let level = 0
 let line = 1
 let lined = 0
 
-coins = 100
+coins = 0
 
 
 
@@ -204,8 +204,8 @@ const items = {
             }
         },
         
-        inInventar: false,
-        name: false
+        inInventar: 'false',
+        name: 'false'
     },
 
     amethyst: {
@@ -233,7 +233,7 @@ const items = {
                 image: itemQuestImgs.amethyst
             }),
 
-        inInventar: false,
+        inInventar: 'false',
         name: 'amethyst'
     },
     
@@ -262,7 +262,7 @@ const items = {
             image: itemQuestImgs.apple
         }),
 
-        inInventar: false,
+        inInventar: 'false',
         name: 'apple'
     },
 
@@ -291,7 +291,7 @@ const items = {
                 image: itemInventoryImgs.arrow
             }),
 
-        inInventar: false,
+        inInventar: 'false',
         name: 'arrow'
     },
 
@@ -319,7 +319,7 @@ const items = {
                 size: tableInventory.itemSize,
                 image: itemInventoryImgs.bakedPotato
             }),
-        inInventar: false,
+        inInventar: 'false',
         name: 'baked Potato'
     },
 
@@ -348,7 +348,7 @@ const items = {
                 image: itemInventoryImgs.bone
             }),
         
-        inInventar: false,
+        inInventar: 'false',
         name: 'bone'
     }
 
@@ -808,9 +808,9 @@ const map = new Sprite({
 // gui
 
 const coinsString = new Writing ({
-    text: 'coins: ' + NaN,
+    text: 'Dabloons: ' + NaN,
     position: {
-        x: canvas.width - 200,
+        x: canvas.width - 210,
         y: canvas.height - 37
     },
     textColor: '#ac673d',
@@ -1249,7 +1249,7 @@ function loop() {
     
 
     if (talkingToQuester) {
-        talk({level: level, line: line, lined: lined})
+        talk({level: level, line: line})
     }
 
     //console.log(teleported);
@@ -2095,7 +2095,7 @@ function setInvSlot({slot, item}) {
     switch (slot) {
         case 'remove': 
             item.object.position = Gui.inventarPosition.none
-            item.inInventar = false
+            item.inInventar = 'false'
             return item.name + ': removed from inventory'
 
         case 0:
@@ -2186,7 +2186,7 @@ function showTableInventory({item}) {
 }
 
 
-function talk({level, line, lined}) {
+function talk({level, line}) {
 
     switch (level) {
         case 0:
@@ -2197,13 +2197,22 @@ function talk({level, line, lined}) {
             } else if (line === 12) {
                 nextLevel(1)
             } 
-        
-
             break
 
         case 1:
+            
+            if (items.apple.inInventar != 'false') {
+                talking.write()
+                talking.text = 'Danke du bekommst 10 Dabloons fuer deine Hilfe. Druecke f'
+            
+                if (keys.f.pressed) {
+                    c.clearRect(0, 0, canvas.width, canvas.height)
+                    setInvSlot({slot: 'remove', item: items.apple})
+                    coins = coins + 10
+                }
+            } 
 
-            break
+            
     
         default:
             break;
@@ -2221,5 +2230,13 @@ function nextLevel(newLevel) {
 
 
 function questRender({level}) {
-    items.apple.quest.draw()
+    switch (level) {
+        case 1:
+            items.apple.quest.draw()
+            break;
+    
+        default:
+            break;
+    }
+    
 }

@@ -42,7 +42,7 @@ class Gui {
             25
             )
 
-        coinsString.text = 'coins: ' + coins
+        coinsString.text = 'Dabloons: ' + coins
         coinsString.write()
 
         
