@@ -32,8 +32,8 @@ canvas.height = 576
 
 
 let talkingToQuester = false
-let level = 'start'
-let line = 0
+let level = 0
+let line = 1
 let lined = 0
 
 coins = 100
@@ -128,6 +128,9 @@ const mapImg = new Image()
 mapImg.src = 'assets/Images/map_background.png'
 
 
+
+
+
 // items
 
 const itemImgs = {
@@ -161,11 +164,31 @@ itemInventoryImgs.bakedPotato.src    =   'assets/Images/items/baked_potato.png'
 itemInventoryImgs.bone.src           =   'assets/Images/items/bone.png'
 
 
+const itemQuestImgs = {
+    amethyst: new Image(),
+    apple: new Image(),
+    arrow: new Image(),
+    bakedPotato: new Image(),
+    bone: new Image(),
+}
+
+
+itemQuestImgs.amethyst.src       =   'assets/Images/items/amethyst_shard.png'
+itemQuestImgs.apple.src          =   'assets/Images/items/apple.png'
+itemQuestImgs.arrow.src          =   'assets/Images/items/arrow.png'
+itemQuestImgs.bakedPotato.src    =   'assets/Images/items/baked_potato.png'
+itemQuestImgs.bone.src           =   'assets/Images/items/bone.png'
+
 const tableInventory = {
     position: {x: 450, y: 250},
     itemSize: 0.8,
     mapSize: 0.2,
     mapImg: mapImg
+}
+
+const questHint = {
+    position: {x: 930, y: 520},
+    itemSize: 0.8
 }
 
 
@@ -203,6 +226,13 @@ const items = {
                 image: itemInventoryImgs.amethyst
             }),
 
+        quest:
+            new Sprite({
+                position: questHint.position,
+                size: tableInventory.itemSize,
+                image: itemQuestImgs.amethyst
+            }),
+
         inInventar: false,
         name: 'amethyst'
     },
@@ -224,7 +254,13 @@ const items = {
                 size: tableInventory.itemSize,
                 image: itemInventoryImgs.apple
             }),
-        
+
+        quest:
+        new Sprite({
+            position: questHint.position,
+            size: tableInventory.itemSize,
+            image: itemQuestImgs.apple
+        }),
 
         inInventar: false,
         name: 'apple'
@@ -240,6 +276,13 @@ const items = {
                 image: itemImgs.arrow,
                 size: 0.6
             }),
+            
+        quest:
+        new Sprite({
+            position: questHint.position,
+            size: tableInventory.itemSize,
+            image: itemQuestImgs.arrow
+        }),
 
         tableInventory: 
             new Sprite({
@@ -263,6 +306,13 @@ const items = {
                 size: 0.6
             }),
 
+        quest:
+        new Sprite({
+            position: questHint.position,
+            size: tableInventory.itemSize,
+            image: itemQuestImgs.bakedPotato
+        }),
+
         tableInventory: 
             new Sprite({
                 position: tableInventory.position,
@@ -283,6 +333,13 @@ const items = {
                 image: itemImgs.bone,
                 size: 0.6
             }),
+
+        quest:
+        new Sprite({
+            position: questHint.position,
+            size: tableInventory.itemSize,
+            image: itemQuestImgs.bone
+        }),
 
         tableInventory: 
             new Sprite({
@@ -1144,7 +1201,7 @@ itemLocationsHouseTwo[15] = items.amethyst
 
 
 // currentScene = 99
-// currentScene = 2
+currentScene = 2
 
 function loop() {
     
@@ -1164,6 +1221,11 @@ function loop() {
     render(currentScene)
     eventListening(currentScene)
     moving(currentScene)
+
+    
+
+    //questRender({level: level})
+    questRender({level: level})
     // console.log(secondsRunning + 'dt: ' + fps);
 
 
@@ -1187,8 +1249,7 @@ function loop() {
     
 
     if (talkingToQuester) {
-        talk({level: level, line: line})
-        talking.write()
+        talk({level: level, line: line, lined: lined})
     }
 
     //console.log(teleported);
@@ -1335,12 +1396,11 @@ function setDocumentTitle(currentScene) {
 
 function eventListening(currentScene) {
 
+   
 
-
-    if (currentScene === 2 && keys.space.pressed && lined === 0) {
-        c.clearRect(0, 0, canvas.width, canvas.height)
-        line = line + 1
-        lined = 30
+    if (level === 0 && keys.space.pressed && talkingToQuester && lined === 0) {
+        nextLine()
+        lined = 40
     }
 
     if (rectengularCollisionPlayers({
@@ -2126,18 +2186,40 @@ function showTableInventory({item}) {
 }
 
 
-function talk({level, line}) {
+function talk({level, line, lined}) {
 
     switch (level) {
-        case 'start':
-            console.log(quest.level.start.talking[line]);
-            talking.text = quest.level.start.talking[line]
-            break;
+        case 0:
+            
+            if (line < 12) {
+                talking.text = quest.level.start.talking[line]
+                talking.write()
+            } else if (line === 12) {
+                nextLevel(1)
+            } 
+        
+
+            break
+
+        case 1:
+
+            break
     
         default:
             break;
     }
+}
 
-    
-    
+function nextLine() {
+    c.clearRect(0, 0, canvas.width, canvas.height)
+    line = line + 1
+}
+
+function nextLevel(newLevel) {
+    level = newLevel
+}
+
+
+function questRender({level}) {
+    items.apple.quest.draw()
 }
