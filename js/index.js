@@ -131,6 +131,15 @@ itemImgs.bakedPotato.src    =   'assets/Images/items/baked_potato.png'
 itemImgs.bone.src           =   'assets/Images/items/bone.png'
 
 
+const tableInventory = {
+    position: {x: 450, y: 250},
+    itemSize: 0.8,
+    mapSize: 0.2,
+    mapImg: mapImg
+}
+
+
+
 
 const items = {
 
@@ -158,8 +167,15 @@ const items = {
                 size: 0.6
             }),
 
-         inInventar: false,
-         name: 'amethyst'
+        tableInventory:           
+            new Sprite({
+                position: tableInventory.position,
+                size: tableInventory.itemSize,
+                image: itemImgs.amethyst
+            }),
+
+        inInventar: false,
+        name: 'amethyst'
     },
     
     apple: {
@@ -173,8 +189,16 @@ const items = {
                 size: 0.6
             }),
 
-         inInventar: false,
-         name: 'apple'
+        tableInventory: 
+            new Sprite({
+                position: tableInventory.position,
+                size: tableInventory.itemSize,
+                image: itemImgs.apple
+            }),
+        
+
+        inInventar: false,
+        name: 'apple'
     },
 
     arrow: {
@@ -188,8 +212,15 @@ const items = {
                 size: 0.6
             }),
 
-         inInventar: false,
-         name: 'arrow'
+        tableInventory: 
+            new Sprite({
+                position: tableInventory.position,
+                size: tableInventory.itemSize,
+                image: itemImgs.arrow
+            }),
+
+        inInventar: false,
+        name: 'arrow'
     },
 
     bakedPotato: {
@@ -203,8 +234,14 @@ const items = {
                 size: 0.6
             }),
 
-         inInventar: false,
-         name: 'baked Potato'
+        tableInventory: 
+            new Sprite({
+                position: tableInventory.position,
+                size: tableInventory.itemSize,
+                image: itemImgs.bakedPotato
+            }),
+        inInventar: false,
+        name: 'baked Potato'
     },
 
     bone: {
@@ -218,10 +255,16 @@ const items = {
                 size: 0.6
             }),
 
-         inInventar: false,
-         name: 'bone'
-    },
-
+        tableInventory: 
+            new Sprite({
+                position: tableInventory.position,
+                size: tableInventory.itemSize,
+                image: itemImgs.bone
+            }),
+        
+        inInventar: false,
+        name: 'bone'
+    }
 
 }
 
@@ -652,9 +695,9 @@ const startTextInfo = new Writing({
 
 
 const map = new Sprite({
-    position: TableInventory.position,
+    position: tableInventory.position,
     image: mapImg,
-    size: TableInventory.mapSize
+    size: tableInventory.mapSize
 })
 
 
@@ -770,18 +813,10 @@ const indexInventarNumber = {
 
 const gui = new Gui(indexInventarNumber)
 
-const apple = {
-    item:
-        new Sprite({
-            position: {x: 450, y: 260},
-            image: items.apple.object.image,
-            size: 1,
-        }),
-    map: map
-}
 
 
-// const tableInventoryApple = new TableInventory()
+
+
 
 
 
@@ -1165,10 +1200,7 @@ function render(currentScene) {
 
             gui.draw({coins: coins})
             
-            apple.map.draw()
-            apple.item.draw()
-            
-
+            showTableInventory({item: items.apple})
             
             
             break
@@ -1737,6 +1769,8 @@ function moving(currentScene) {
 
 
 
+
+
 function rectengularCollision({rectangle1, rectangle2}) {
     return( 
         rectangle1.position.x + rectangle1.width * rectangle1.size  >= rectangle2.position.x                            &&
@@ -1967,3 +2001,12 @@ function getNextFreeSlot() {
 }
 
 
+
+
+function showTableInventory({item}) {
+
+
+    map.draw()
+    item.tableInventory.draw()
+
+}
