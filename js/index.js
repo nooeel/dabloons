@@ -814,7 +814,7 @@ const map = new Sprite({
 const coinsString = new Writing ({
     text: 'Dabloons: ' + NaN,
     position: {
-        x: canvas.width - 210,
+        x: canvas.width - 240,
         y: canvas.height - 37
     },
     textColor: '#ac673d',
@@ -925,6 +925,13 @@ const talking = new Writing({
     backgroundColor: 'grey'
 })
 
+
+const houseFourMessage = new Writing({
+    text: 'Dieses haus ist noch nicht da, warte auf version 2.0',
+    position: { x: 170, y: 470},
+    textColor: 'black',
+
+})
 
 
 
@@ -1337,9 +1344,18 @@ function render(currentScene) {
             gui.draw({coins: coins})
             
             // showTableInventory({item: items.apple})
-            
-            
             break
+
+        case 4: // haus unten rechts
+            c.fillStyle = 'grey'
+            c.fillRect(0, 0, canvas.width, canvas.height)
+            houseFourMessage.write()
+            startTextInfo.write()
+            if (keys.space.pressed) {
+                setCurrentScene(1)
+            }
+            break
+            
 
 
         case 99: // testScene
@@ -1422,7 +1438,7 @@ function eventListening(currentScene) {
         showTableInventory({item: itemLocationsHouseTwo[onUsableHouseTwo]})
     }
 
-    if ((keys.w.pressed || keys.a.pressed || keys.s.pressed || keys.d.pressed) && currentScene === 3) {
+    if (currentScene === 3) {
         for (let i = 0; i < usablesHouseTwo.length; i++) {
             const usable = usablesHouseTwo[i]
             if (
@@ -1479,7 +1495,7 @@ function eventListening(currentScene) {
     } 
 
 
-    if (currentScene === 1 && (keys.w.pressed || keys.a.pressed || keys.s.pressed || keys.d.pressed)) {
+    if (currentScene === 1) {
         for (let i = 0; i < doors.length; i++) {
             const door = doors[i]
             if (
@@ -1500,7 +1516,7 @@ function eventListening(currentScene) {
         }
     }
 
-    if (currentScene === 2 && (keys.w.pressed || keys.a.pressed || keys.s.pressed || keys.d.pressed)) {
+    if (currentScene === 2) {
         for (let i = 0; i < doorsHouseOne.length; i++) {
             const doorHouseOne = doorsHouseOne[i]
             if (
@@ -1515,14 +1531,14 @@ function eventListening(currentScene) {
                     }
                 })
             ) {
-                onDoorHouseOne = doorHouseOne.index
+                onDoorHouseOne = 1
             } else {
                 onDoorHouseOne = 0
             }
         }
     }
 
-    if (currentScene === 3 && (keys.w.pressed || keys.a.pressed || keys.s.pressed || keys.d.pressed)) {
+    if (currentScene === 3) {
         for (let i = 0; i < doorsHouseTwo.length; i++) {
             const doorHouseTwo = doorsHouseTwo[i]
             if (
@@ -2016,11 +2032,6 @@ function touchUsable({index, scene}) {
 }
 
 
-
-
-
-
-
 function renderTiles(currentScene) {
     switch (currentScene) {
         case 1: 
@@ -2167,8 +2178,6 @@ function setInvSlot({slot, item}) {
     }
 
     return item.name + ': added on slot ' + slot
-
-    
 }
 
 
@@ -2236,6 +2245,7 @@ function talk({level, line}) {
 
             if (randomItem.inInventar != 'false') {
                 talking.text = 'Danke! Du bekommst ' + randomDabloons + ' Dabloons fuer deine Hilfe. Druecke "f"'
+                talking.write()
             
                 if (keys.f.pressed) {
                     c.clearRect(0, 0, canvas.width, canvas.height)
@@ -2254,8 +2264,9 @@ function talk({level, line}) {
             talking.write()
 
             if (randomItem.inInventar != 'false') {
-                talking.write()
                 talking.text = 'Danke! Du bekommst ' + randomDabloons + ' Dabloons fuer deine Hilfe. Druecke "f"'
+                talking.write()
+                
             
                 if (keys.f.pressed) {
                     c.clearRect(0, 0, canvas.width, canvas.height)
