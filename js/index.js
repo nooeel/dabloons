@@ -1305,7 +1305,7 @@ function render(currentScene) {
     switch (currentScene) {
 
         case 0: // start
-            
+            c.clearRect(0, 0, canvas.width, canvas.height)
             renderBg('#F5B041')
             dabloonImg.draw()
             startTextInfo.write() 
@@ -1611,7 +1611,7 @@ function moving(currentScene) {
 
     
 
-    const playerStep = 5
+    const playerStep = 3
     let moving = true
     player.moving = false
 
